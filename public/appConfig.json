@@ -1,17 +1,17 @@
 {     
     "name" : "MESHMAP",
-    "logoPath":"./prarednjpeg-logo1.jpg",
+    "logoPath":"",
     "mapSettings": {
-        "zoom": "9.5",
+        "zoom": "10",
         "mapCenter": { 
-            "lat": "18.2",
-            "lon": "-66.3"
+            "lat": "37.8880",
+            "lon": "-122.2679"
         }
     },
     "contactInfo": {
-        "callsign" : "KP4MSR",
-        "name": "Manuel Santamaria",
-        "email": "kp4msr@winlink.org"
+        "callsign" : "KN6PLV",
+        "name": "Tim Wilkinson",
+        "email": "kn6plv@qsl.net"
     },
-    "nodesFilter" : "[a-zA-z]+[0-9][a-zA-Z]+[-][a-zA-Z]+[-][a-zA-Z]+[-][a-zA-Z]*[1-9]+"
-    }
+    "nodesFilter" : "[a-zA-z]+[0-9][a-zA-Z]+"
+}
