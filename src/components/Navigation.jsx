@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import HomePageJumbotron from "./HomePageJumbotron";
 import Inicio from "./Inicio";
 import MapGLPRAred from  "./MapGLPRAred"
-import PrArednMap from "./PrArednMap"
+import BaArednMap from "./BaArednMap"
 import ArednMap from './ArednMap'
 
 class Navigation extends Component {
@@ -39,7 +39,7 @@ class Navigation extends Component {
             </Route>
             <Route path="/users"></Route>
             <Route path="/mapa">
-              <PrArednMap/>
+              <BaArednMap/>
             </Route>
             <Route path="/">
               <Inicio />

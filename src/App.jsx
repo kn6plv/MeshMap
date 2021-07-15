@@ -4,7 +4,7 @@ import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import React, { Component } from "react";
-import PrArednMap from "./components/PrArednMap"
+import BaArednMap from "./components/BaArednMap"
 import sysinfo from "./APIResources.json"
 import axios from "axios"
 import alertify from 'alertifyjs'
@@ -37,6 +37,7 @@ class App extends Component {
               interfaces: nodeInfo.data.interfaces,
               link_info: Object.keys(nodeInfo.data.link_info).map((key) => nodeInfo.data.link_info[key])
         }
+console.log(node);
       
       //  Add this node to the state
       this.setState({nodesData: [...this.state.nodesData, node]})
@@ -97,7 +98,7 @@ class App extends Component {
       //<Container fluid>
         <div>       
           <Header nodesData={this.state.nodesData} appConfig={this.state.appConfig}></Header>      
-          <PrArednMap nodesData={this.state.nodesData} appConfig={this.state.appConfig}/>                  
+          <BaArednMap nodesData={this.state.nodesData} appConfig={this.state.appConfig}/>                  
         </div>
       //</Container>
     );
