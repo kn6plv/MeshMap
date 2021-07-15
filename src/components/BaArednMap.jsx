@@ -83,8 +83,8 @@ state = {
         />
           { this.props.nodesData.map(n => <Marker key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf.freq) }>
             <Popup>  
-              {<div><h6>{n.node}</h6>
-              <p><a href={`http://${n.node}.local.mesh`} target="_blank">View Node Console</a><br/>
+              {<div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
+              <p>
                  Desc: {n.node_details.description} <br/>
                  Position: ({n.lat},{n.lon})<br/>
                  RF Status: {n.meshrf.status}<br/>
@@ -94,7 +94,7 @@ state = {
                  MAC: {n.interfaces[0].mac}<br/>
                  Model: {n.node_details.model}<br/>
                  Firmware Ver: {n.node_details.firmware_version} <br/> </p>            
-                 Neighbors:<br/><ul> { n.link_info.map(m => <li key={m.hostname}> {m.hostname} ({m.linkType}) </li>)} </ul> </div>
+                 Neighbors:<br/><ul> { n.link_info.map(m => <li key={m.hostname}><a href={`http://${m.hostname}`} target="_blank">{m.hostname}</a> ({m.linkType}) </li>)} </ul> </div>
                 }      
             </Popup>
           </Marker>)}
