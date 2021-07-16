@@ -37,7 +37,6 @@ class App extends Component {
               interfaces: nodeInfo.data.interfaces,
               link_info: Object.keys(nodeInfo.data.link_info).map((key) => nodeInfo.data.link_info[key])
         }
-console.log(node);
       
       //  Add this node to the state
       this.setState({nodesData: [...this.state.nodesData, node]})

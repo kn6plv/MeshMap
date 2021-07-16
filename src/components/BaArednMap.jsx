@@ -94,7 +94,7 @@ state = {
                  MAC: {n.interfaces[0].mac}<br/>
                  Model: {n.node_details.model}<br/>
                  Firmware Ver: {n.node_details.firmware_version} <br/> </p>            
-                 Neighbors:<br/><ul> { n.link_info.map(m => <li key={m.hostname}><a href={`http://${m.hostname}`} target="_blank">{m.hostname}</a> ({m.linkType}) </li>)} </ul> </div>
+                 Neighbors:<br/><ul> { n.link_info.map(m => <li key={m.hostname}><a href={`http://${m.hostname}`} target="_blank">{m.hostname.replace(/\.local\.mesh$/,'')}</a> { m.linkType ? `(${m.linkType})` : "" } </li>)} </ul> </div>
                 }      
             </Popup>
           </Marker>)}
