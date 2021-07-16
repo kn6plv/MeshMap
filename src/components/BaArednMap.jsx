@@ -85,18 +85,18 @@ class BaArednMap extends Component {
                   <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
                     <table>
                       <tr style={{verticalAlign:"top"}}><td>Desc</td><td>{n.node_details.description}</td></tr>
-                      <tr><td>Position</td><td>({n.lat},{n.lon})</td></tr>
+                      <tr><td>Position</td><td>{n.lat},{n.lon}</td></tr>
                       <tr><td>RF Status</td><td>{n.meshrf.status}</td></tr>
                       <tr><td>SSID</td><td>{n.meshrf.ssid}</td></tr>
                       <tr><td>RF Channel</td><td>{n.meshrf.channel}</td></tr>
                       <tr><td>RF Freq</td><td>{n.meshrf.freq}</td></tr>
                       <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
                       <tr style={{verticalAlign:"top"}}><td>Model</td><td>{n.node_details.model}</td></tr>
-                      <tr><td width="80">Firmware Ver</td><td>{n.node_details.firmware_version}</td></tr>
+                      <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
+                      <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
+                        n.link_info.map(m => <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname.replace(/\.local\.mesh$/,''))}>{m.hostname.replace(/\.local\.mesh$/,'')}</a> { m.linkType ? `(${m.linkType})` : "" } </div>)
+                      } </td></tr>
                     </table>
-                    Neighbors<br/><ul> {
-                      n.link_info.map(m => <li key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname.replace(/\.local\.mesh$/,''))}>{m.hostname.replace(/\.local\.mesh$/,'')}</a> { m.linkType ? `(${m.linkType})` : "" } </li>)
-                    } </ul>
                   </div>
                 }
               </Popup>
