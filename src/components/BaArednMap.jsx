@@ -83,18 +83,18 @@ class BaArednMap extends Component {
               <Marker ref={n.node} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf.freq) }>
                 <Popup> {
                   <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
-                  <p>
-                    Desc: {n.node_details.description}<br/>
-                    Position: ({n.lat},{n.lon})<br/>
-                    RF Status: {n.meshrf.status}<br/>
-                    SSID: {n.meshrf.ssid}<br/>
-                    RF Channel: {n.meshrf.channel}<br/>
-                    RF Freq: {n.meshrf.freq}<br/>
-                    MAC: {n.interfaces[0].mac}<br/>
-                    Model: {n.node_details.model}<br/>
-                    Firmware Ver: {n.node_details.firmware_version}<br/>
-                    </p>
-                    Neighbors:<br/><ul> {
+                    <table>
+                      <tr style={{verticalAlign:"top"}}><td>Desc</td><td>{n.node_details.description}</td></tr>
+                      <tr><td>Position</td><td>({n.lat},{n.lon})</td></tr>
+                      <tr><td>RF Status</td><td>{n.meshrf.status}</td></tr>
+                      <tr><td>SSID</td><td>{n.meshrf.ssid}</td></tr>
+                      <tr><td>RF Channel</td><td>{n.meshrf.channel}</td></tr>
+                      <tr><td>RF Freq</td><td>{n.meshrf.freq}</td></tr>
+                      <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
+                      <tr style={{verticalAlign:"top"}}><td>Model</td><td>{n.node_details.model}</td></tr>
+                      <tr><td width="80">Firmware Ver</td><td>{n.node_details.firmware_version}</td></tr>
+                    </table>
+                    Neighbors<br/><ul> {
                       n.link_info.map(m => <li key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname.replace(/\.local\.mesh$/,''))}>{m.hostname.replace(/\.local\.mesh$/,'')}</a> { m.linkType ? `(${m.linkType})` : "" } </li>)
                     } </ul>
                   </div>
