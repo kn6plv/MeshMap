@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from "react";
-import { Map, TileLayer, Marker, Popup } from "react-leaflet";
+import { Map, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import { Icon } from "leaflet";
 
 const PurpleIcon = new Icon({
@@ -72,6 +72,39 @@ class BaArednMap extends Component {
     }
     else {
       //const mapCenter = [this.state.mapCenter.lat, this.state.mapCenter.lon];
+      const rfconns = [];
+      const tunconns = [];
+      const nodes = {};
+      const done = {};
+      this.props.nodesData.forEach(n => nodes[n.node] = n);
+      this.props.nodesData.forEach(n => {
+        if (!n.lat || !n.lon) {
+          return;
+        }
+        n.link_info.forEach(m => {
+          const tn = m.hostname.replace(/\.local\.mesh$/,'');
+          const to = nodes[tn];
+          if (to) {
+            if (!to.lat || !to.lon || done[`${tn}/${n.node}`]) {
+              return;
+            }
+            const conn = [ [ n.lat, n.lon ], [ to.lat, to.lon ] ];
+            switch (m.linkType) {
+              case 'RF':
+                rfconns.push(conn);
+                break;
+              case 'TUN':
+                tunconns.push(conn);
+                break;
+              case 'DTD':
+              default:
+                break;
+            }
+            done[`${tn}/${n.node}`] = true;
+            done[`${n.node}/${tn}`] = true;
+          }
+        });
+      });
       const mapCenter = [this.props.appConfig.mapSettings.mapCenter.lat, this.props.appConfig.mapSettings.mapCenter.lon];
       return (
         <Map ref="map" className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={false}>
@@ -79,28 +112,30 @@ class BaArednMap extends Component {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-            { this.props.nodesData.map(n =>
-              <Marker ref={n.node} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf.freq) }>
-                <Popup> {
-                  <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
-                    <table>
-                      <tr style={{verticalAlign:"top"}}><td>Desc</td><td>{n.node_details.description}</td></tr>
-                      <tr><td>Position</td><td>{n.lat},{n.lon}</td></tr>
-                      <tr><td>RF Status</td><td>{n.meshrf.status}</td></tr>
-                      <tr><td>SSID</td><td>{n.meshrf.ssid}</td></tr>
-                      <tr><td>RF Channel</td><td>{n.meshrf.channel}</td></tr>
-                      <tr><td>RF Freq</td><td>{n.meshrf.freq}</td></tr>
-                      <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
-                      <tr style={{verticalAlign:"top"}}><td>Model</td><td>{n.node_details.model}</td></tr>
-                      <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
-                      <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
-                        n.link_info.map(m => <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname.replace(/\.local\.mesh$/,''))}>{m.hostname.replace(/\.local\.mesh$/,'')}</a> { m.linkType ? `(${m.linkType})` : "" } </div>)
-                      } </td></tr>
-                    </table>
-                  </div>
-                }
-              </Popup>
-            </Marker>)}
+          <Polyline color="lime" weight="2" positions={rfconns} />
+          <Polyline color="grey" weight="1" dashArray="5 5" positions={tunconns} />
+          { this.props.nodesData.map(n =>
+            <Marker ref={n.node} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf.freq) }>
+              <Popup> {
+                <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
+                  <table>
+                    <tr style={{verticalAlign:"top"}}><td>Desc</td><td>{n.node_details.description}</td></tr>
+                    <tr><td>Location</td><td>{n.lat},{n.lon}</td></tr>
+                    <tr><td>RF Status</td><td>{n.meshrf.status}</td></tr>
+                    <tr><td>SSID</td><td>{n.meshrf.ssid}</td></tr>
+                    <tr><td>RF Channel</td><td>{n.meshrf.channel}</td></tr>
+                    <tr><td>RF Freq</td><td>{n.meshrf.freq}</td></tr>
+                    <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
+                    <tr style={{verticalAlign:"top"}}><td>Model</td><td>{n.node_details.model}</td></tr>
+                    <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
+                    <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
+                      n.link_info.map(m => <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname.replace(/\.local\.mesh$/,''))}>{m.hostname.replace(/\.local\.mesh$/,'')}</a> { m.linkType ? `(${m.linkType})` : "" } </div>)
+                    } </td></tr>
+                  </table>
+                </div>
+              } </Popup>
+            </Marker>)
+          }
         </Map>
       );
     }
