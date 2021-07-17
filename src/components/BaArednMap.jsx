@@ -76,7 +76,7 @@ class BaArednMap extends Component {
       const tunconns = [];
       const nodes = {};
       const done = {};
-      this.props.nodesData.forEach(n => nodes[n.node] = n);
+      this.props.nodesData.forEach(n => nodes[n.node.toUpperCase()] = n);
       this.props.nodesData.forEach(n => {
         if (!n.lat || !n.lon) {
           return;
@@ -123,10 +123,14 @@ class BaArednMap extends Component {
                     <tr style={{verticalAlign:"top"}}><td>Desc</td><td>{n.node_details.description}</td></tr>
                     <tr><td>Location</td><td>{n.lat},{n.lon}</td></tr>
                     <tr><td>RF Status</td><td>{n.meshrf.status}</td></tr>
-                    <tr><td>SSID</td><td>{n.meshrf.ssid}</td></tr>
-                    <tr><td>RF Channel</td><td>{n.meshrf.channel}</td></tr>
-                    <tr><td>RF Freq</td><td>{n.meshrf.freq}</td></tr>
-                    <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
+                    { n.meshrf.status === 'on' && <tbody>
+                        <tr><td>SSID</td><td>{n.meshrf.ssid}</td></tr>
+                        <tr><td>RF Channel</td><td>{n.meshrf.channel}</td></tr>
+                        <tr><td>RF Freq</td><td>{n.meshrf.freq}</td></tr>
+                        <tr><td>Bandwidth</td><td>{n.meshrf.chanbw} MHz</td></tr>
+                        <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
+                        </tbody>
+                    }
                     <tr style={{verticalAlign:"top"}}><td>Model</td><td>{n.node_details.model}</td></tr>
                     <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
                     <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
