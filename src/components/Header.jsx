@@ -34,7 +34,7 @@ class Header extends Component {
 
     render() {
         return (
-            <table style={{ position: "absolute", right: 0, top: 0, width: "200px", height: "200px", zIndex: 2, color: "black" }}>
+            <table className="Header">
                 <tr>
                     <th>Band</th>
                     <th>Nodes</th>
