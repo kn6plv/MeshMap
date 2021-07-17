@@ -111,7 +111,8 @@ class BaArednMap extends Component {
         <Map ref="map" className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={false}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            url="http://kn6plv-tiles.local.mesh/tile/{z}/{x}/{y}.png"
           />
           <Polyline color="lime" weight="2" positions={rfconns} />
           <Polyline color="grey" weight="1" dashArray="5 5" positions={tunconns} />
