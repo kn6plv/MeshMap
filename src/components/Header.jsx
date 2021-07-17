@@ -23,64 +23,45 @@ class Header extends Component {
                 //console.log("es 2.4")
                 //console.log(nodesData.filter(n => n.meshrf.status == "on" && n.meshrf.freq.includes("2.")).length)
                 return nodesData.filter(n => n.meshrf.status === "on" && n.meshrf.freq.includes("5.")).length
-            
+
             case 0:
                 return nodesData.filter(n => n.meshrf.status === "off").length
 
-            default: 
+            default:
                 return nodesData.filter(n => n.meshrf.status === "off").length
         }
     }
 
-    render() { 
-
-            return ( <React.Fragment> 
-            
-            <Row>
-                <Col xs lg="2"> 
-                    <Image src={this.props.appConfig.logoPath} width={225} fluid></Image> 
-                </Col>                      
-                <Col xs lg="8"></Col>             
-                <Col >                             
-                     <table>
-                         <tr>
-                             <th>Band</th>
-                             <th>Nodes</th>
-                         </tr>
-                         
-                         <tr>
-                            <td>  <Image src="./magentaRadioCircle-icon.png" width={20}></Image> 900 Mhz </td>
-                            <td># { this.countNodes(this.props.nodesData, 900)} </td>
-                         </tr>
-                         
-                         <tr>
-                             <td> <Image src="./purpleRadioCircle-icon.png" width={20}></Image> 2.4 Ghz </td>
-                             <td> # {this.countNodes(this.props.nodesData, 24)}</td>
-                         </tr>
-                         
-                         <tr>
-                             <td> <Image src="./blueRadioCircle-icon.png" width={20}></Image> 3.4 Ghz </td>
-                             <td> # {this.countNodes(this.props.nodesData, 34)}</td>
-                         </tr>
-                         
-                         <tr>
-                            <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5Ghz </td>
-                            <td># {this.countNodes(this.props.nodesData, 58)}</td>
-                         </tr>
-                         <tr>
-                            <td><Image src="./grayRadioCircle-icon.png" width={20}></Image> Mesh RF Off </td>
-                            <td># {this.countNodes(this.props.nodesData, 0)}</td>
-                         </tr>
-                         
-                         
-                     </table>
-                    
-                </Col>
-               
-            </Row>
-            <br/>
-            </React.Fragment> );
+    render() {
+        return (
+            <table style={{ position: "absolute", right: 0, top: 0, width: "200px", height: "200px", zIndex: 2, color: "black" }}>
+                <tr>
+                    <th>Band</th>
+                    <th>Nodes</th>
+                </tr>
+                <tr>
+                    <td>  <Image src="./magentaRadioCircle-icon.png" width={20}></Image> 900 Mhz </td>
+                    <td># { this.countNodes(this.props.nodesData, 900)} </td>
+                </tr>
+                <tr>
+                    <td> <Image src="./purpleRadioCircle-icon.png" width={20}></Image> 2.4 Ghz </td>
+                    <td> # {this.countNodes(this.props.nodesData, 24)}</td>
+                </tr>
+                <tr>
+                    <td> <Image src="./blueRadioCircle-icon.png" width={20}></Image> 3.4 Ghz </td>
+                    <td> # {this.countNodes(this.props.nodesData, 34)}</td>
+                </tr>
+                <tr>
+                    <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5Ghz </td>
+                    <td># {this.countNodes(this.props.nodesData, 58)}</td>
+                </tr>
+                <tr>
+                    <td><Image src="./grayRadioCircle-icon.png" width={20}></Image> Mesh RF Off </td>
+                    <td># {this.countNodes(this.props.nodesData, 0)}</td>
+                </tr>
+            </table>
+        );
     }
 }
- 
+
 export default Header;

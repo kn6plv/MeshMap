@@ -19,7 +19,7 @@ class App extends Component {
     appConfig: [],
     nodesData: []
   }
-  
+
   // Get the details from the node. Recieves the name of the node.
   async retrieveNodeDetails(node)
   {
@@ -37,11 +37,11 @@ class App extends Component {
               interfaces: nodeInfo.data.interfaces,
               link_info: Object.keys(nodeInfo.data.link_info).map((key) => nodeInfo.data.link_info[key])
         }
-      
+
       //  Add this node to the state
       this.setState({nodesData: [...this.state.nodesData, node]})
       //console.log("nodesData",this.state.nodesData)
-      } 
+      }
     }
     else {}
   }  catch(e) {console.log(`There was an error getting ${node.name} details`)}
@@ -50,8 +50,8 @@ class App extends Component {
   async getNodesData() {
     try {
     // Get the list of nodes / hosts before to retrieve the nodes information.
-    //const nodes =  await axios.get(`http://${mynode.name}${sysinfo.resource}${sysinfo.params.hosts}`) 
-    const nodes =  await axios.get(`http://localnode.local.mesh${sysinfo.resource}${sysinfo.params.hosts}`) 
+    //const nodes =  await axios.get(`http://${mynode.name}${sysinfo.resource}${sysinfo.params.hosts}`)
+    const nodes =  await axios.get(`http://localnode.local.mesh${sysinfo.resource}${sysinfo.params.hosts}`)
 
     if(nodes.status !== 200) {
       //alert("ERROR")
@@ -59,7 +59,7 @@ class App extends Component {
     }
 
     else {
-    // Get only the ones that matches the format CALLSIGN-CITY-COUNTRY-TYPE#NODENUMBER 
+    // Get only the ones that matches the format CALLSIGN-CITY-COUNTRY-TYPE#NODENUMBER
     const regex = new RegExp(this.state.appConfig.nodesFilter);
     //const regex = "[a-zA-z]+[0-9][a-zA-Z]+[-][a-zA-Z]+[-][a-zA-Z]+[-][a-zA-Z]*[1-9]+"
 
@@ -95,9 +95,9 @@ class App extends Component {
   render() {
     return (
       //<Container fluid>
-        <div>       
-          <Header nodesData={this.state.nodesData} appConfig={this.state.appConfig}></Header>      
-          <BaArednMap nodesData={this.state.nodesData} appConfig={this.state.appConfig}/>                  
+        <div>
+          <Header nodesData={this.state.nodesData} appConfig={this.state.appConfig}/>
+          <BaArednMap nodesData={this.state.nodesData} appConfig={this.state.appConfig}/>
         </div>
       //</Container>
     );

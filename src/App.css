@@ -4,6 +4,7 @@
 
 .Map {
   height: 100vh;
+  z-index: 1;
 }
 
 .App-logo {
