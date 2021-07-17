@@ -33,6 +33,7 @@ class App extends Component {
               lat: nodeInfo.data.lat,
               lon: nodeInfo.data.lon,
               meshrf : nodeInfo.data.meshrf,
+              chanbw: nodeInfo.data.chanbw,
               node_details: nodeInfo.data.node_details,
               interfaces: nodeInfo.data.interfaces,
               link_info: Object.keys(nodeInfo.data.link_info).map((key) => nodeInfo.data.link_info[key])
