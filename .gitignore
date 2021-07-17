@@ -1,3 +1,5 @@
 # Ignore the node_modules directory
 node_modules/
 startdev.sh
+.DS_Store
+._.DS_Store
