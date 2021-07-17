@@ -4,6 +4,10 @@ import React, { Component } from "react";
 import { Map, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import { Icon } from "leaflet";
 
+
+const TILE_URL="http://kn6plv-tiles.local.mesh/tile/{z}/{x}/{y}.png";
+//const TILE_URL="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
 const PurpleIcon = new Icon({
   iconUrl: "./purpleRadioCircle-icon.png",
   iconSize: [25, 25],
@@ -30,9 +34,13 @@ const GrayIcon = new Icon({
 })
 
 // Function to get the Freq Icon
-function getIcon(freq){
-  if(freq !== null && typeof freq !== 'undefined' )
-  {
+function getIcon(rf){
+  const chan = parseInt(rf.channel);
+  if (chan >= 3380 && chan <= 3495) {
+    return BlueIcon;
+  }
+  const freq = rf.freq;
+  if (freq) {
     if(freq.includes("2.")) {
       return PurpleIcon;
     }
@@ -61,17 +69,13 @@ class BaArednMap extends Component {
   }
 
   componentDidMount() {
-    //this.setState({appConfig: this.props.appConfig})
-    //console.log(this.state,"ACTUAL STATE")
   }
 
   render() {
-    //console.log(this.props.appConfig,"appConfig")
     if(this.props.appConfig.length === 0) {
       return null;
     }
     else {
-      //const mapCenter = [this.state.mapCenter.lat, this.state.mapCenter.lon];
       const rfconns = [];
       const tunconns = [];
       const nodes = {};
@@ -111,13 +115,12 @@ class BaArednMap extends Component {
         <Map ref="map" className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={false}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            url="http://kn6plv-tiles.local.mesh/tile/{z}/{x}/{y}.png"
+            url={TILE_URL}
           />
           <Polyline color="lime" weight="2" positions={rfconns} />
           <Polyline color="grey" weight="1" dashArray="5 5" positions={tunconns} />
           { this.props.nodesData.map(n =>
-            <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf.freq) }>
+            <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf) }>
               <Popup> {
                 <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
                   <table>
