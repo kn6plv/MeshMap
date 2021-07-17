@@ -81,11 +81,12 @@ class BaArednMap extends Component {
         if (!n.lat || !n.lon) {
           return;
         }
+        const fn = n.node.toUpperCase();
         n.link_info.forEach(m => {
-          const tn = m.hostname.replace(/\.local\.mesh$/,'');
+          const tn = m.hostname.replace(/\.local\.mesh$/i,'').toUpperCase();
           const to = nodes[tn];
           if (to) {
-            if (!to.lat || !to.lon || done[`${tn}/${n.node}`]) {
+            if (!to.lat || !to.lon || done[`${tn}/${fn}`]) {
               return;
             }
             const conn = [ [ n.lat, n.lon ], [ to.lat, to.lon ] ];
@@ -100,8 +101,8 @@ class BaArednMap extends Component {
               default:
                 break;
             }
-            done[`${tn}/${n.node}`] = true;
-            done[`${n.node}/${tn}`] = true;
+            done[`${tn}/${fn}`] = true;
+            done[`${fn}/${tn}`] = true;
           }
         });
       });
@@ -115,7 +116,7 @@ class BaArednMap extends Component {
           <Polyline color="lime" weight="2" positions={rfconns} />
           <Polyline color="grey" weight="1" dashArray="5 5" positions={tunconns} />
           { this.props.nodesData.map(n =>
-            <Marker ref={n.node} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf.freq) }>
+            <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf.freq) }>
               <Popup> {
                 <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
                   <table>
@@ -129,7 +130,7 @@ class BaArednMap extends Component {
                     <tr style={{verticalAlign:"top"}}><td>Model</td><td>{n.node_details.model}</td></tr>
                     <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
                     <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
-                      n.link_info.map(m => <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname.replace(/\.local\.mesh$/,''))}>{m.hostname.replace(/\.local\.mesh$/,'')}</a> { m.linkType ? `(${m.linkType})` : "" } </div>)
+                      n.link_info.map(m => <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname.replace(/\.local\.mesh$/i,''))}>{m.hostname.replace(/\.local\.mesh$/i,'')}</a> { m.linkType ? `(${m.linkType})` : "" } </div>)
                     } </td></tr>
                   </table>
                 </div>
@@ -142,7 +143,7 @@ class BaArednMap extends Component {
   }
 
   openPopup(id) {
-    const popup = this.refs[id];
+    const popup = this.refs[id.toUpperCase()];
     if (popup) {
       popup.fireLeafletEvent('click');
     }
