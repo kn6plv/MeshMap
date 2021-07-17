@@ -76,14 +76,14 @@ class BaArednMap extends Component {
       const tunconns = [];
       const nodes = {};
       const done = {};
-      this.props.nodesData.forEach(n => nodes[n.node.toUpperCase()] = n);
+      this.props.nodesData.forEach(n => nodes[this.canonicalHostname(n.node)] = n);
       this.props.nodesData.forEach(n => {
         if (!n.lat || !n.lon) {
           return;
         }
-        const fn = n.node.toUpperCase();
+        const fn = this.canonicalHostname(n.node);
         n.link_info.forEach(m => {
-          const tn = m.hostname.replace(/\.local\.mesh$/i,'').toUpperCase();
+          const tn = this.canonicalHostname(m.hostname);
           const to = nodes[tn];
           if (to) {
             if (!to.lat || !to.lon || done[`${tn}/${fn}`]) {
@@ -135,7 +135,7 @@ class BaArednMap extends Component {
                     <tr style={{verticalAlign:"top"}}><td>Model</td><td>{n.node_details.model}</td></tr>
                     <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
                     <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
-                      n.link_info.map(m => <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname.replace(/\.local\.mesh$/i,''))}>{m.hostname.replace(/\.local\.mesh$/i,'')}</a> { m.linkType ? `(${m.linkType})` : "" } </div>)
+                      n.link_info.map(m => <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname)}>{this.canonicalHostname(m.hostname)}</a> { m.linkType ? `(${m.linkType})` : "" } </div>)
                     } </td></tr>
                   </table>
                 </div>
@@ -148,10 +148,14 @@ class BaArednMap extends Component {
   }
 
   openPopup(id) {
-    const popup = this.refs[id.toUpperCase()];
+    const popup = this.refs[this.canonicalHostname(id)];
     if (popup) {
       popup.fireLeafletEvent('click');
     }
+  }
+
+  canonicalHostname(hostname) {
+    return hostname.replace(/^\./, '').replace(/\.local\.mesh$/i,'').toUpperCase()
   }
 }
 
