@@ -93,7 +93,7 @@ class BaArednMap extends Component {
             if (!to.lat || !to.lon || done[`${tn}/${fn}`]) {
               return;
             }
-            const conn = [ [ n.lat, n.lon ], [ to.lat, to.lon ] ];
+            const conn = { pos: [[ n.lat, n.lon ], [ to.lat, to.lon ]], from: fn, to: tn };
             switch (m.linkType) {
               case 'RF':
                 rfconns.push(conn);
@@ -117,11 +117,27 @@ class BaArednMap extends Component {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url={TILE_URL}
           />
-          <Polyline color="lime" weight="2" positions={rfconns} />
-          <Polyline color="grey" weight="1" dashArray="5 5" positions={tunconns} />
+          {
+            rfconns.map(conn =>
+              <Polyline color="lime" weight="2" positions={conn.pos}>
+                <Popup maxWidth="500">
+                  <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
+                </Popup>
+              </Polyline>
+            )
+          }
+          {
+            tunconns.map(conn =>
+              <Polyline color="grey" weight="2" dashArray="5 5" positions={conn.pos}>
+                <Popup maxWidth="500">
+                  <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
+                </Popup>
+              </Polyline>
+            )
+          }
           { this.props.nodesData.map(n =>
             <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf) }>
-              <Popup> {
+              <Popup maxWidth="350"> {
                 <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
                   <table>
                     <tr style={{verticalAlign:"top"}}><td>Desc</td><td>{n.node_details.description}</td></tr>
@@ -129,7 +145,7 @@ class BaArednMap extends Component {
                     <tr><td>RF Status</td><td>{n.meshrf.status}</td></tr>
                     { n.meshrf.status === 'on' && <tbody>
                         <tr><td>SSID</td><td>{n.meshrf.ssid}</td></tr>
-                        <tr><td>RF Channel</td><td>{n.meshrf.channel}</td></tr>
+                        <tr style={{verticalAlign:"top"}}><td>RF Channel</td><td>{n.meshrf.channel}</td></tr>
                         <tr><td>RF Freq</td><td>{n.meshrf.freq}</td></tr>
                         <tr><td>Bandwidth</td><td>{n.meshrf.chanbw} MHz</td></tr>
                         <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
