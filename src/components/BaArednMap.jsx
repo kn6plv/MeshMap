@@ -41,16 +41,16 @@ function getIcon(rf){
   }
   const freq = rf.freq;
   if (freq) {
-    if(freq.includes("2.")) {
+    if(freq.indexOf("2") === 0) {
       return PurpleIcon;
     }
-    else if(freq.includes("5.")){
+    else if(freq.indexOf("5") === 0){
       return OrangeIcon;
     }
-    else if(freq.includes("3.")){
+    else if(freq.indexOf("3") === 0){
       return BlueIcon;
     }
-    else if (freq.includes("900")){
+    else if (freq.indexOf("900") === 0){
       return MagentaIcon;
     }
   }
