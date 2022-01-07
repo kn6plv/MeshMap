@@ -166,7 +166,14 @@ class BaArednMap extends Component {
                     <tr style={{verticalAlign:"top"}}><td>Model</td><td>{n.node_details.model}</td></tr>
                     <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
                     <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
-                      n.link_info.map(m => <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname)}>{this.canonicalHostname(m.hostname)}</a> { m.linkType ? `(${m.linkType})` : "" } </div>)
+                      n.link_info.map(m => {
+                        if (nodes[this.canonicalHostname(m.hostname)]) {
+                          return <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname)}>{this.canonicalHostname(m.hostname)}</a> { m.linkType ? `(${m.linkType})` : "" } </div>
+                        }
+                        else {
+                          return <div key={m.hostname}>{this.canonicalHostname(m.hostname)} { m.linkType ? `(${m.linkType})` : "" } </div>
+                        }
+                      })
                     } </td></tr>
                   </table>
                 </div>
