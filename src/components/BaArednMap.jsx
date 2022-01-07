@@ -3,10 +3,13 @@
 import React, { Component } from "react";
 import { Map, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import { Icon } from "leaflet";
+import axios from "axios"
 
-
-const TILE_URL="http://kn6plv-tiles.local.mesh/tile/{z}/{x}/{y}.png";
-//const TILE_URL="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+let TILE_URL;
+const TILE_URLS = [
+  { test: "http://kn6plv-tiles.local.mesh/tile/10/164/395.png", url: "http://kn6plv-tiles.local.mesh/tile/{z}/{x}/{y}.png" },
+  { test: "https://c.tile.openstreetmap.org/10/162/395.png", url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }
+];
 
 const PurpleIcon = new Icon({
   iconUrl: "./purpleRadioCircle-icon.png",
@@ -68,11 +71,20 @@ class BaArednMap extends Component {
       }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    TILE_URL = (await Promise.all(TILE_URLS.map(async tile => {
+      try {
+        await axios.head(tile.test, { timeout: 1000 });
+        return tile.url;
+      }
+      catch (e) {
+        return null;
+      }
+    }))).find(item => item);
   }
 
   render() {
-    if(this.props.appConfig.length === 0) {
+    if(this.props.appConfig.length === 0 || !TILE_URL) {
       return null;
     }
     else {

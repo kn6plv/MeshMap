@@ -33,7 +33,7 @@ class App extends Component {
           chanbw: nodeInfo.data.chanbw,
           node_details: nodeInfo.data.node_details,
           interfaces: nodeInfo.data.interfaces,
-          link_info: Object.keys(nodeInfo.data.link_info).map((key) => nodeInfo.data.link_info[key])
+          link_info: Object.keys(nodeInfo.data.link_info || {}).map((key) => nodeInfo.data.link_info[key])
         };
 
         //  Add this node to the state
@@ -60,7 +60,41 @@ class App extends Component {
       }
     }
     catch(e) {
-      alertify.alert("Unable to find your AREDN node, please verify if you are connected to the MESH.");
+      try {
+        await this.getStoredNodesData()
+      }
+      catch (e) {
+        alertify.alert("Unable to find your AREDN node, please verify if you are connected to the MESH.");
+      }
+    }
+  }
+
+  async getStoredNodesData() {
+    try {
+      const stored = await axios.get('data/out.json');
+      const nodesData = [];
+      stored.data.nodeInfo.forEach(nodeInfo => {
+        if (nodeInfo.data.lat && nodeInfo.data.lon) {
+          nodesData.push({
+            node: nodeInfo.data.node,
+            lat: nodeInfo.data.lat,
+            lon: nodeInfo.data.lon,
+            meshrf : nodeInfo.data.meshrf,
+            chanbw: nodeInfo.data.chanbw,
+            node_details: nodeInfo.data.node_details,
+            interfaces: nodeInfo.data.interfaces,
+            link_info: Object.keys(nodeInfo.data.link_info || {}).map((key) => nodeInfo.data.link_info[key])
+          });
+        }
+      });
+      this.setState({nodesData: nodesData});
+      const date = new Date(stored.data.date);
+      if ((new Date() - date) > 24 * 60 * 60 * 1000) {
+        alertify.alert("Warning", "Node data was last updated on " + date);
+      }
+    }
+    catch (e) {
+      alertify.alert(e.toString());
     }
   }
 
