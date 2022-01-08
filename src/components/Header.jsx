@@ -12,13 +12,14 @@ class Header extends Component {
       case 24:
         return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && n.meshrf.freq.startsWith("2")).length;
       case 34:
-        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && (n.meshrf.freq.startsWith("3.") || (n.meshrf.channel >= 3380 && n.meshrf.channel <= 3495))).length;
+        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && (n.meshrf.freq.startsWith("3") || (n.meshrf.channel >= 3380 && n.meshrf.channel <= 3495))).length;
       case 58:
-        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && n.meshrf.freq.startsWith("5")).length;
-      case 0:
-        return nodesData.filter(n => n.meshrf.status === "off").length
+        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && n.meshrf.freq.startsWith("5") && !(n.meshrf.channel >= 3380 && n.meshrf.channel <= 3495)).length;
+      case 'off':
+        return nodesData.filter(n => n.meshrf.status === "off").length;
+      case 'all':
       default:
-        return nodesData.filter(n => n.meshrf.status === "off").length
+        return this.countNodes(nodesData, 900) + this.countNodes(nodesData, 900) + this.countNodes(nodesData, 24) + this.countNodes(nodesData, 34) + this.countNodes(nodesData, 58) + this.countNodes(nodesData, 'off');
     }
   }
 
@@ -52,11 +53,11 @@ class Header extends Component {
           </tr>
           <tr>
             <td><Image src="./grayRadioCircle-icon.png" width={20}></Image> No RF </td>
-            <td># {this.countNodes(this.props.nodesData, 0)}</td>
+            <td># {this.countNodes(this.props.nodesData, 'off')}</td>
           </tr>
           <tr>
             <td style={{paddingLeft:33}}>Total</td>
-            <td># {this.props.nodesData.length}</td>
+            <td># {this.countNodes(this.props.nodesData, 'all')}</td>
           </tr>
         </table>
         {
