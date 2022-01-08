@@ -3,3 +3,5 @@ node_modules/
 startdev.sh
 .DS_Store
 ._.DS_Store
+build/
+public/data/
