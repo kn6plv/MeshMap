@@ -6,13 +6,24 @@
   position: absolute;
   right: 0;
   top: 0;
-  width: 200px;
-  height: 200px;
+  padding: 4px 8px;
   z-index: 2;
   color: black;
   background-color: rgba(255, 255, 255, 0.6);
   margin: 10px;
   border: 1px solid grey;
+}
+
+.Header .title {
+  font-size: 18px;
+  font-weight: bold;
+  padding-left: 10px;
+}
+
+.Header .footer {
+  font-size: 8px;
+  text-align: right;
+  margin-top: -4px;
 }
 
 .Header th:first-child, .Header td:first-child {

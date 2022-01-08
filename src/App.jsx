@@ -15,8 +15,9 @@ import Header from './components/Header'
 class App extends Component {
 
   state = {
-    appConfig: [],
-    nodesData: []
+    appConfig: null,
+    nodesData: [],
+    live: true
   }
 
   // Get the details from the node. Recieves the name of the node.
@@ -37,7 +38,7 @@ class App extends Component {
         };
 
         //  Add this node to the state
-        this.setState({nodesData: [...this.state.nodesData, node]})
+        this.setState({ nodesData: [ ...this.state.nodesData, node ] });
       }
     }
     catch(_) {
@@ -47,21 +48,18 @@ class App extends Component {
   async getNodesData() {
     try {
       // Get the list of nodes / hosts before to retrieve the nodes information.
-      const nodes =  await axios.get(`http://localnode.local.mesh${sysinfo.resource}${sysinfo.params.hosts}`)
-      if(nodes.status !== 200) {
-        alertify.alert("Unable to find your AREDN node, please verify if you are connected to the MESH.");
-      }
-      else {
-        // Get only the ones that matches the format CALLSIGN-CITY-COUNTRY-TYPE#NODENUMBER
-        const regex = new RegExp(this.state.appConfig.nodesFilter);
-        const filteredNodeList = nodes.data.hosts.filter(h => h.name.toUpperCase().trim().match(regex))
-        // Iterate thru each node to get the details.
-        Object.keys(filteredNodeList).forEach(key => this.retrieveNodeDetails(filteredNodeList[key]));
-      }
+      const start = this.state.appConfig.mapSettings.mapCenter.node || "localnode";
+      const nodes =  await axios.get(`http://${start}.local.mesh${sysinfo.resource}${sysinfo.params.hosts}`)
+      // Get only the ones that matches the format CALLSIGN-CITY-COUNTRY-TYPE#NODENUMBER
+      const regex = new RegExp(this.state.appConfig.nodesFilter);
+      const filteredNodeList = nodes.data.hosts.filter(h => h.name.toUpperCase().trim().match(regex))
+      // Iterate thru each node to get the details.
+      Object.keys(filteredNodeList).forEach(key => this.retrieveNodeDetails(filteredNodeList[key]));
     }
     catch(e) {
       try {
         await this.getStoredNodesData()
+        this.setState({ live: false });
       }
       catch (e) {
         alertify.alert("Unable to find your AREDN node, please verify if you are connected to the MESH.");
@@ -87,7 +85,7 @@ class App extends Component {
           });
         }
       });
-      this.setState({nodesData: nodesData});
+      this.setState({ nodesData: nodesData });
       const date = new Date(stored.data.date);
       if ((new Date() - date) > 24 * 60 * 60 * 1000) {
         alertify.alert("Warning", "Node data was last updated on " + date);
@@ -108,7 +106,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header nodesData={this.state.nodesData} appConfig={this.state.appConfig}/>
+        <Header nodesData={this.state.nodesData} appConfig={this.state.appConfig} live={this.state.live}/>
         <BaArednMap nodesData={this.state.nodesData} appConfig={this.state.appConfig}/>
       </div>
     );

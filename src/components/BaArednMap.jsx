@@ -5,11 +5,6 @@ import { Map, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import { Icon } from "leaflet";
 import axios from "axios"
 
-const TILE_URLS = [
-  { test: "http://kn6plv-tiles.local.mesh/tile/10/164/395.png", url: "http://kn6plv-tiles.local.mesh/tile/{z}/{x}/{y}.png" },
-  { test: "https://c.tile.openstreetmap.org/10/162/395.png", url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }
-];
-
 const PurpleIcon = new Icon({
   iconUrl: "./purpleRadioCircle-icon.png",
   iconSize: [25, 25],
@@ -62,93 +57,91 @@ function getIcon(rf){
 class BaArednMap extends Component {
 
   state = {
-      //appConfig: this.props.appConfig,
-      zoom: 9.5,
-      mapCenter: {
-        lat: 18.2,
-        lon: -66.3,
-      },
-      tile_url: null
-  }
-
-  async componentDidMount() {
-    const url = (await Promise.all(TILE_URLS.map(async tile => {
-      try {
-        await axios.head(tile.test, { timeout: 1000 });
-        return tile.url;
-      }
-      catch (e) {
-        return null;
-      }
-    }))).find(item => item);
-    this.setState({ tile_url: url });
+    tile_url: null
   }
 
   render() {
-    if(this.props.appConfig.length === 0 || !this.state.tile_url) {
+    if(!this.props.appConfig) {
       return null;
     }
-    else {
-      const rfconns = [];
-      const tunconns = [];
-      const nodes = {};
-      const done = {};
-      this.props.nodesData.forEach(n => nodes[this.canonicalHostname(n.node)] = n);
-      this.props.nodesData.forEach(n => {
-        if (!n.lat || !n.lon) {
-          return;
-        }
-        const fn = this.canonicalHostname(n.node);
-        n.link_info.forEach(m => {
-          const tn = this.canonicalHostname(m.hostname);
-          const to = nodes[tn];
-          if (to) {
-            if (!to.lat || !to.lon || done[`${tn}/${fn}`]) {
-              return;
-            }
-            const conn = { pos: [[ n.lat, n.lon ], [ to.lat, to.lon ]], from: fn, to: tn };
-            switch (m.linkType) {
-              case 'RF':
-                rfconns.push(conn);
-                break;
-              case 'TUN':
-                tunconns.push(conn);
-                break;
-              case 'DTD':
-              default:
-                break;
-            }
-            done[`${tn}/${fn}`] = true;
-            done[`${fn}/${tn}`] = true;
+
+    if (!this.state.tile_url) {
+      new Promise(async () => {
+        const url = (await Promise.all(this.props.appConfig.mapSettings.servers.map(async tile => {
+          try {
+            await axios.head(tile.test, { timeout: 1000 });
+            return tile.url;
           }
-        });
+          catch (e) {
+            return null;
+          }
+        }))).find(item => item);
+        this.setState({ tile_url: url });
       });
-      const mapCenter = [this.props.appConfig.mapSettings.mapCenter.lat, this.props.appConfig.mapSettings.mapCenter.lon];
-      return (
-        <Map ref="map" className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={false}>
-          <TileLayer
-            attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url={this.state.tile_url}
-          />
-          {
-            rfconns.map(conn =>
-              <Polyline color="lime" weight="2" positions={conn.pos}>
-                <Popup maxWidth="500">
-                  <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
-                </Popup>
-              </Polyline>
-            )
+      return null;
+    }
+
+    const rfconns = [];
+    const tunconns = [];
+    const nodes = {};
+    const done = {};
+    this.props.nodesData.forEach(n => nodes[this.canonicalHostname(n.node)] = n);
+    this.props.nodesData.forEach(n => {
+      if (!n.lat || !n.lon) {
+        return;
+      }
+      const fn = this.canonicalHostname(n.node);
+      n.link_info.forEach(m => {
+        const tn = this.canonicalHostname(m.hostname);
+        const to = nodes[tn];
+        if (to) {
+          if (!to.lat || !to.lon || done[`${tn}/${fn}`]) {
+            return;
           }
-          {
-            tunconns.map(conn =>
-              <Polyline color="grey" weight="2" dashArray="5 5" positions={conn.pos}>
-                <Popup maxWidth="500">
-                  <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
-                </Popup>
-              </Polyline>
-            )
+          const conn = { pos: [[ n.lat, n.lon ], [ to.lat, to.lon ]], from: fn, to: tn };
+          switch (m.linkType) {
+            case 'RF':
+              rfconns.push(conn);
+              break;
+            case 'TUN':
+              tunconns.push(conn);
+              break;
+            case 'DTD':
+            default:
+              break;
           }
-          { this.props.nodesData.map(n =>
+          done[`${tn}/${fn}`] = true;
+          done[`${fn}/${tn}`] = true;
+        }
+      });
+    });
+    const mapCenter = [this.props.appConfig.mapSettings.mapCenter.lat, this.props.appConfig.mapSettings.mapCenter.lon];
+    return (
+      <Map ref="map" className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={false}>
+        <TileLayer
+          attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          url={this.state.tile_url}
+        />
+        {
+          rfconns.map(conn =>
+            <Polyline color="lime" weight="2" positions={conn.pos}>
+              <Popup maxWidth="500">
+                <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
+              </Popup>
+            </Polyline>
+          )
+        }
+        {
+          tunconns.map(conn =>
+            <Polyline color="grey" weight="2" dashArray="5 5" positions={conn.pos}>
+              <Popup maxWidth="500">
+                <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
+              </Popup>
+            </Polyline>
+          )
+        }
+        { 
+          this.props.nodesData.map(n =>
             <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf) }>
               <Popup maxWidth="350"> {
                 <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
@@ -179,11 +172,11 @@ class BaArednMap extends Component {
                   </table>
                 </div>
               } </Popup>
-            </Marker>)
-          }
-        </Map>
-      );
-    }
+            </Marker>
+          )
+        }
+      </Map>
+    );
   }
 
   openPopup(id) {

@@ -23,37 +23,46 @@ class Header extends Component {
   }
 
   render() {
+    if (!this.props.appConfig) {
+      return null;
+    }
     return (
-      <table className="Header">
-        <tr>
-          <th>Band</th>
-          <th>Nodes</th>
-        </tr>
-        <tr>
-          <td>  <Image src="./magentaRadioCircle-icon.png" width={20}></Image> 900 Mhz </td>
-          <td># { this.countNodes(this.props.nodesData, 900)} </td>
-        </tr>
-        <tr>
-          <td> <Image src="./purpleRadioCircle-icon.png" width={20}></Image> 2.4 Ghz </td>
-          <td> # {this.countNodes(this.props.nodesData, 24)}</td>
-        </tr>
-        <tr>
-          <td> <Image src="./blueRadioCircle-icon.png" width={20}></Image> 3.4 Ghz </td>
-          <td> # {this.countNodes(this.props.nodesData, 34)}</td>
-        </tr>
-        <tr>
-          <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5Ghz </td>
-          <td># {this.countNodes(this.props.nodesData, 58)}</td>
-        </tr>
-        <tr>
-          <td><Image src="./grayRadioCircle-icon.png" width={20}></Image> Mesh RF Off </td>
-          <td># {this.countNodes(this.props.nodesData, 0)}</td>
-        </tr>
-        <tr>
-          <td style={{paddingLeft:33}}>Total</td>
-          <td># {this.props.nodesData.length}</td>
-        </tr>
-      </table>
+      <div className="Header">
+        <div className="title">{this.props.appConfig.name}</div>
+        <table>
+          <tr>
+            <td>Band</td>
+            <td>Nodes</td>
+          </tr>
+          <tr>
+            <td>  <Image src="./magentaRadioCircle-icon.png" width={20}></Image> 900 Mhz </td>
+            <td># { this.countNodes(this.props.nodesData, 900)} </td>
+          </tr>
+          <tr>
+            <td> <Image src="./purpleRadioCircle-icon.png" width={20}></Image> 2.4 Ghz </td>
+            <td> # {this.countNodes(this.props.nodesData, 24)}</td>
+          </tr>
+          <tr>
+            <td> <Image src="./blueRadioCircle-icon.png" width={20}></Image> 3.4 Ghz </td>
+            <td> # {this.countNodes(this.props.nodesData, 34)}</td>
+          </tr>
+          <tr>
+            <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5Ghz </td>
+            <td># {this.countNodes(this.props.nodesData, 58)}</td>
+          </tr>
+          <tr>
+            <td><Image src="./grayRadioCircle-icon.png" width={20}></Image> Mesh RF Off </td>
+            <td># {this.countNodes(this.props.nodesData, 0)}</td>
+          </tr>
+          <tr>
+            <td style={{paddingLeft:33}}>Total</td>
+            <td># {this.props.nodesData.length}</td>
+          </tr>
+        </table>
+        {
+          this.props.live ? "" : <div className="footer">Download CSV data <a href="data/out.csv" target="_blank">here</a></div>
+        }
+      </div>
     );
   }
 }

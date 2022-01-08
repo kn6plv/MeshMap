@@ -1,17 +1,21 @@
 {     
-    "name" : "MESHMAP",
-    "logoPath":"",
+    "name" : "BayArea AREDN",
     "mapSettings": {
         "zoom": "10",
-        "mapCenter": { 
+        "mapCenter": {
+            "node": "kn6plv-brkoxfla-omni",
             "lat": "37.8880",
             "lon": "-122.2679"
-        }
+        },
+        "servers": [
+            { "test": "http://kn6plv-tiles.local.mesh/tile/10/164/395.png", "url": "http://kn6plv-tiles.local.mesh/tile/{z}/{x}/{y}.png" },
+            { "test": "https://c.tile.openstreetmap.org/10/162/395.png", "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }
+        ]
     },
     "contactInfo": {
         "callsign" : "KN6PLV",
         "name": "Tim Wilkinson",
-        "email": "kn6plv@qsl.net"
+        "email": "tim.j.wilkinson@gmail.com"
     },
     "nodesFilter" : "[a-zA-z]+[0-9][a-zA-Z]+"
 }
