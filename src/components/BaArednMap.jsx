@@ -83,6 +83,7 @@ class BaArednMap extends Component {
 
     const rfconns = [];
     const tunconns = [];
+    const dtdconns = [];
     const nodes = {};
     const done = {};
     this.props.nodesData.forEach(n => nodes[this.canonicalHostname(n.node)] = n);
@@ -107,6 +108,8 @@ class BaArednMap extends Component {
               tunconns.push(conn);
               break;
             case 'DTD':
+              dtdconns.push(conn);
+              break;
             default:
               break;
           }
@@ -134,6 +137,15 @@ class BaArednMap extends Component {
         {
           tunconns.map(conn =>
             <Polyline color="grey" weight="2" dashArray="5 5" positions={conn.pos}>
+              <Popup maxWidth="500">
+                <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
+              </Popup>
+            </Polyline>
+          )
+        }
+        {
+          dtdconns.map(conn =>
+            <Polyline color="cadetblue" weight="2" dashArray="1 10" positions={conn.pos}>
               <Popup maxWidth="500">
                 <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
               </Popup>
