@@ -5,7 +5,6 @@ import { Map, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import { Icon } from "leaflet";
 import axios from "axios"
 
-let TILE_URL;
 const TILE_URLS = [
   { test: "http://kn6plv-tiles.local.mesh/tile/10/164/395.png", url: "http://kn6plv-tiles.local.mesh/tile/{z}/{x}/{y}.png" },
   { test: "https://c.tile.openstreetmap.org/10/162/395.png", url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }
@@ -68,11 +67,12 @@ class BaArednMap extends Component {
       mapCenter: {
         lat: 18.2,
         lon: -66.3,
-      }
+      },
+      tile_url: null
   }
 
   async componentDidMount() {
-    TILE_URL = (await Promise.all(TILE_URLS.map(async tile => {
+    const url = (await Promise.all(TILE_URLS.map(async tile => {
       try {
         await axios.head(tile.test, { timeout: 1000 });
         return tile.url;
@@ -81,10 +81,11 @@ class BaArednMap extends Component {
         return null;
       }
     }))).find(item => item);
+    this.setState({ tile_url: url });
   }
 
   render() {
-    if(this.props.appConfig.length === 0 || !TILE_URL) {
+    if(this.props.appConfig.length === 0 || !this.state.tile_url) {
       return null;
     }
     else {
@@ -127,7 +128,7 @@ class BaArednMap extends Component {
         <Map ref="map" className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={false}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url={TILE_URL}
+            url={this.state.tile_url}
           />
           {
             rfconns.map(conn =>
