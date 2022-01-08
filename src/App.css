@@ -6,12 +6,14 @@
   position: absolute;
   right: 0;
   top: 0;
-  padding: 4px 8px;
+  padding: 8px;
   z-index: 2;
   color: black;
   background-color: rgba(255, 255, 255, 0.6);
   margin: 10px;
+  font-size: 15px;
   border: 1px solid grey;
+  border-radius: 16px;
 }
 
 .Header .title {
@@ -26,11 +28,12 @@
   margin-top: -4px;
 }
 
-.Header th:first-child, .Header td:first-child {
+.Header td:first-child {
   padding-left: 10px;
+  min-width: 120px;
 }
 
-.Header th:last-child, .Header td:last-child {
+.Header td:last-child {
   padding-right: 10px;
 }
 
