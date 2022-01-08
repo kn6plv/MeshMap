@@ -8,13 +8,13 @@ class Header extends Component {
   countNodes(nodesData, band) {
     switch(band) {
       case 900:
-        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && n.meshrf.freq.includes("900")).length;
+        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && n.meshrf.freq.startsWith("900")).length;
       case 24:
-        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && (n.meshrf.freq.includes("2.") || n.meshrf.freq.startsWith("2"))).length;
+        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && n.meshrf.freq.startsWith("2")).length;
       case 34:
-        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && (n.meshrf.freq.includes("3.") || (n.meshrf.channel >= 3380 && n.meshrf.channel <= 3495))).length;
+        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && (n.meshrf.freq.startsWith("3.") || (n.meshrf.channel >= 3380 && n.meshrf.channel <= 3495))).length;
       case 58:
-        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && (n.meshrf.freq.includes("5.") || n.meshrf.freq.startsWith("5"))).length;
+        return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && n.meshrf.freq.startsWith("5")).length;
       case 0:
         return nodesData.filter(n => n.meshrf.status === "off").length
       default:
@@ -47,11 +47,11 @@ class Header extends Component {
             <td> # {this.countNodes(this.props.nodesData, 34)}</td>
           </tr>
           <tr>
-            <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5Ghz </td>
+            <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5 Ghz </td>
             <td># {this.countNodes(this.props.nodesData, 58)}</td>
           </tr>
           <tr>
-            <td><Image src="./grayRadioCircle-icon.png" width={20}></Image> Mesh RF Off </td>
+            <td><Image src="./grayRadioCircle-icon.png" width={20}></Image> No RF </td>
             <td># {this.countNodes(this.props.nodesData, 0)}</td>
           </tr>
           <tr>
