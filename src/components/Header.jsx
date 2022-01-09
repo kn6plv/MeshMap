@@ -36,19 +36,19 @@ class Header extends Component {
             <td>Nodes</td>
           </tr>
           <tr>
-            <td>  <Image src="./magentaRadioCircle-icon.png" width={20}></Image> 900 Mhz </td>
+            <td>  <Image src="./magentaRadioCircle-icon.png" width={20}></Image> 900 MHz </td>
             <td># { this.countNodes(this.props.nodesData, 900)} </td>
           </tr>
           <tr>
-            <td> <Image src="./purpleRadioCircle-icon.png" width={20}></Image> 2.4 Ghz </td>
+            <td> <Image src="./purpleRadioCircle-icon.png" width={20}></Image> 2.4 GHz </td>
             <td> # {this.countNodes(this.props.nodesData, 24)}</td>
           </tr>
           <tr>
-            <td> <Image src="./blueRadioCircle-icon.png" width={20}></Image> 3.4 Ghz </td>
+            <td> <Image src="./blueRadioCircle-icon.png" width={20}></Image> 3.4 GHz </td>
             <td> # {this.countNodes(this.props.nodesData, 34)}</td>
           </tr>
           <tr>
-            <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5 Ghz </td>
+            <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5 GHz </td>
             <td># {this.countNodes(this.props.nodesData, 58)}</td>
           </tr>
           <tr>
