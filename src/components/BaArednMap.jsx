@@ -3,7 +3,8 @@
 import React, { Component } from "react";
 import { Map, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import { Icon } from "leaflet";
-import axios from "axios"
+import axios from "axios";
+const Turf = require('@turf/turf');
 
 const PurpleIcon = new Icon({
   iconUrl: "./purpleRadioCircle-icon.png",
@@ -155,10 +156,10 @@ class BaArednMap extends Component {
         { 
           this.props.nodesData.map(n =>
             <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf) }>
-              <Popup maxWidth="350"> {
+              <Popup maxWidth="380"> {
                 <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
                   <table>
-                    <tr style={{verticalAlign:"top"}}><td>Desc</td><td>{n.node_details.description}</td></tr>
+                    <tr style={{verticalAlign:"top"}}><td>Description</td><td>{n.node_details.description}</td></tr>
                     <tr><td>Location</td><td>{n.lat},{n.lon}</td></tr>
                     <tr><td>RF Status</td><td>{n.meshrf.status}</td></tr>
                     { n.meshrf.status === 'on' && <tbody>
@@ -173,11 +174,23 @@ class BaArednMap extends Component {
                     <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
                     <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
                       n.link_info.map(m => {
-                        if (nodes[this.canonicalHostname(m.hostname)]) {
-                          return <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname)}>{this.canonicalHostname(m.hostname)}</a> { m.linkType ? `(${m.linkType})` : "" } </div>
+                        const chostname = this.canonicalHostname(m.hostname);
+                        const hn = nodes[chostname];
+                        if (hn && m.linkType) {
+                          let info = "";
+                          if (n.lat && n.lon && hn.lat && hn.lon && m.linkType === "RF") {
+                            const from = Turf.point([ n.lon, n.lat ]);
+                            const to = Turf.point([ hn.lon, hn.lat ]);
+                            const bearing = Math.round(Turf.bearing(from, to, { units: "degress" }));
+                            const distance = Turf.distance(from, to, { units: "miles" }).toFixed(1);
+                            if (parseFloat(distance) > 0) {
+                              info = ` ${bearing}\u00B0 ${distance} miles`;
+                            }
+                          }
+                          return <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname)}>{chostname}</a> <span className="bearing">({m.linkType}{info})</span></div>
                         }
                         else {
-                          return <div key={m.hostname}>{this.canonicalHostname(m.hostname)} { m.linkType ? `(${m.linkType})` : "" } </div>
+                          return <div key={m.hostname}>{this.canonicalHostname(m.hostname)} <span className="bearing">({ m.linkType ? `${m.linkType}` : "" })</span></div>
                         }
                       })
                     } </td></tr>
