@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import { Map, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import { Icon } from "leaflet";
 import axios from "axios";
+import hardware from "../hardware";
 const Turf = require('@turf/turf');
 
 const PurpleIcon = new Icon({
@@ -156,7 +157,7 @@ class BaArednMap extends Component {
         { 
           this.props.nodesData.map(n =>
             <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf) }>
-              <Popup maxWidth="380"> {
+              <Popup minWidth="240" maxWidth="380"> {
                 <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
                   <table>
                     <tr style={{verticalAlign:"top"}}><td>Description</td><td>{n.node_details.description}</td></tr>
@@ -170,7 +171,7 @@ class BaArednMap extends Component {
                         <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
                         </tbody>
                     }
-                    <tr style={{verticalAlign:"top"}}><td>Model</td><td>{n.node_details.model}</td></tr>
+                    <tr style={{verticalAlign:"top"}}><td>Hardware</td><td>{hardware(n.node_details.board_id) || n.node_details.model}</td></tr>
                     <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
                     <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
                       n.link_info.map(m => {
