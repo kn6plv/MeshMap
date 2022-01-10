@@ -161,11 +161,11 @@ class BaArednMap extends Component {
                   <table>
                     <tr style={{verticalAlign:"top"}}><td>Description</td><td>{n.node_details.description}</td></tr>
                     <tr><td>Location</td><td>{n.lat},{n.lon}</td></tr>
-                    <tr><td>RF Status</td><td>{n.meshrf.status}</td></tr>
+                    <tr><td>RF Status</td><td style={{textTransform: "capitalize"}}>{n.meshrf.status}</td></tr>
                     { n.meshrf.status === 'on' && <tbody>
                         <tr><td>SSID</td><td>{n.meshrf.ssid}</td></tr>
-                        <tr style={{verticalAlign:"top"}}><td>RF Channel</td><td>{n.meshrf.channel}</td></tr>
-                        <tr><td>RF Freq</td><td>{n.meshrf.freq}</td></tr>
+                        <tr style={{verticalAlign:"top"}}><td>Channel</td><td>{n.meshrf.channel}</td></tr>
+                        <tr><td>Frequency</td><td>{n.meshrf.freq}</td></tr>
                         <tr><td>Bandwidth</td><td>{n.meshrf.chanbw} MHz</td></tr>
                         <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
                         </tbody>
@@ -181,7 +181,7 @@ class BaArednMap extends Component {
                           if (n.lat && n.lon && hn.lat && hn.lon && m.linkType === "RF") {
                             const from = Turf.point([ n.lon, n.lat ]);
                             const to = Turf.point([ hn.lon, hn.lat ]);
-                            const bearing = Math.round(Turf.bearing(from, to, { units: "degress" }));
+                            const bearing = (360 + Math.round(Turf.bearing(from, to, { units: "degrees" }))) % 360;
                             const distance = Turf.distance(from, to, { units: "miles" }).toFixed(1);
                             if (parseFloat(distance) > 0) {
                               info = ` ${bearing}\u00B0 ${distance} miles`;
@@ -190,7 +190,7 @@ class BaArednMap extends Component {
                           return <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname)}>{chostname}</a> <span className="bearing">({m.linkType}{info})</span></div>
                         }
                         else {
-                          return <div key={m.hostname}>{this.canonicalHostname(m.hostname)} <span className="bearing">({ m.linkType ? `${m.linkType}` : "" })</span></div>
+                          return <div key={m.hostname}>{this.canonicalHostname(m.hostname)} <span className="bearing">{ m.linkType ? `(${m.linkType})` : "" }</span></div>
                         }
                       })
                     } </td></tr>

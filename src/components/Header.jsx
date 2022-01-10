@@ -37,27 +37,27 @@ class Header extends Component {
           </tr>
           <tr>
             <td>  <Image src="./magentaRadioCircle-icon.png" width={20}></Image> 900 MHz </td>
-            <td># { this.countNodes(this.props.nodesData, 900)} </td>
+            <td>{ this.countNodes(this.props.nodesData, 900)} </td>
           </tr>
           <tr>
             <td> <Image src="./purpleRadioCircle-icon.png" width={20}></Image> 2.4 GHz </td>
-            <td> # {this.countNodes(this.props.nodesData, 24)}</td>
+            <td>{this.countNodes(this.props.nodesData, 24)}</td>
           </tr>
           <tr>
             <td> <Image src="./blueRadioCircle-icon.png" width={20}></Image> 3.4 GHz </td>
-            <td> # {this.countNodes(this.props.nodesData, 34)}</td>
+            <td>{this.countNodes(this.props.nodesData, 34)}</td>
           </tr>
           <tr>
             <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5 GHz </td>
-            <td># {this.countNodes(this.props.nodesData, 58)}</td>
+            <td>{this.countNodes(this.props.nodesData, 58)}</td>
           </tr>
           <tr>
             <td><Image src="./grayRadioCircle-icon.png" width={20}></Image> No RF </td>
-            <td># {this.countNodes(this.props.nodesData, 'off')}</td>
+            <td>{this.countNodes(this.props.nodesData, 'off')}</td>
           </tr>
           <tr>
             <td style={{paddingLeft:33}}>Total</td>
-            <td># {this.countNodes(this.props.nodesData, 'all')}</td>
+            <td>{this.countNodes(this.props.nodesData, 'all')}</td>
           </tr>
         </table>
         {
