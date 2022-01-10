@@ -61,7 +61,11 @@ class Header extends Component {
           </tr>
         </table>
         {
-          this.props.live ? "" : <div className="footer">Download CSV data <a href="data/out.csv" target="_blank">here</a></div>
+          !this.props.lastUpdated ? "" :
+            <div>
+              <div className="footer">Download CSV data <a href="data/out.csv" target="_blank">here</a></div>
+              <div className="footer">Last updated {(new Date(this.props.lastUpdated).toLocaleString())}</div>
+            </div>
         }
       </div>
     );

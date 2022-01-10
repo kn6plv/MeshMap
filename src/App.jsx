@@ -17,7 +17,7 @@ class App extends Component {
   state = {
     appConfig: null,
     nodesData: [],
-    live: true
+    lastUpdated: null
   }
 
   // Get the details from the node. Recieves the name of the node.
@@ -59,7 +59,6 @@ class App extends Component {
     catch(e) {
       try {
         await this.getStoredNodesData()
-        this.setState({ live: false });
       }
       catch (e) {
         alertify.alert("Unable to find your AREDN node, please verify if you are connected to the MESH.");
@@ -85,10 +84,10 @@ class App extends Component {
           });
         }
       });
-      this.setState({ nodesData: nodesData });
+      this.setState({ nodesData: nodesData, lastUpdated: stored.data.date });
       const date = new Date(stored.data.date);
       if ((new Date() - date) > 24 * 60 * 60 * 1000) {
-        alertify.alert("Warning", "Node data was last updated on " + date);
+        alertify.alert("Warning", "Node data was last updated on " + date.toLocaleString());
       }
     }
     catch (e) {
@@ -106,7 +105,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header nodesData={this.state.nodesData} appConfig={this.state.appConfig} live={this.state.live}/>
+        <Header nodesData={this.state.nodesData} appConfig={this.state.appConfig} lastUpdated={this.state.lastUpdated}/>
         <BaArednMap nodesData={this.state.nodesData} appConfig={this.state.appConfig}/>
       </div>
     );
