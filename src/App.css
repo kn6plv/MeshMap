@@ -64,6 +64,11 @@ body {
   height: 100vh;
 }
 
+.linktype {
+  color: grey;
+  font-size: 9px;
+}
+
 .bearing {
   font-size: 9px
 }

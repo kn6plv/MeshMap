@@ -174,6 +174,7 @@ class BaArednMap extends Component {
                     <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
                     <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
                       n.link_info.map(m => {
+                        const cname = this.canonicalHostname(n.node);
                         const chostname = this.canonicalHostname(m.hostname);
                         const hn = nodes[chostname];
                         if (hn && m.linkType) {
@@ -184,13 +185,19 @@ class BaArednMap extends Component {
                             const bearing = (360 + Math.round(Turf.bearing(from, to, { units: "degrees" }))) % 360;
                             const distance = Turf.distance(from, to, { units: "miles" }).toFixed(1);
                             if (parseFloat(distance) > 0) {
-                              info = ` ${bearing}\u00B0 ${distance} miles`;
+                              let sigf = m.signal - m.noise;
+                              const hl = hn.link_info.find(info => this.canonicalHostname(info.hostname) === cname);
+                              let sigt = hl ? hl.signal - hl.noise : '-';
+                              info = `${sigf} dB \u2190 ${bearing}\u00B0 ${distance} miles \u2192 ${sigt} dB`;
                             }
                           }
-                          return <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname)}>{chostname}</a> <span className="bearing">({m.linkType}{info})</span></div>
+                          return <div>
+                            <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname)}>{chostname}</a> <span className="linktype">{m.linkType}</span></div>
+                            <div className="bearing">{info}</div>
+                          </div>
                         }
                         else {
-                          return <div key={m.hostname}>{this.canonicalHostname(m.hostname)} <span className="bearing">{ m.linkType ? `(${m.linkType})` : "" }</span></div>
+                          return <div key={m.hostname}>{this.canonicalHostname(m.hostname)} <span className="linktype">{ m.linkType ? `${m.linkType}` : "" }</span></div>
                         }
                       })
                     } </td></tr>
