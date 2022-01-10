@@ -186,8 +186,14 @@ class BaArednMap extends Component {
                             const distance = Turf.distance(from, to, { units: "miles" }).toFixed(1);
                             if (parseFloat(distance) > 0) {
                               let sigf = m.signal - m.noise;
+                              if (isNaN(sigf)) {
+                                sigf = '-';
+                              }
                               const hl = hn.link_info.find(info => this.canonicalHostname(info.hostname) === cname);
                               let sigt = hl ? hl.signal - hl.noise : '-';
+                              if (isNaN(sigt)) {
+                                sigt = '-';
+                              }
                               info = `${sigf} dB \u2190 ${bearing}\u00B0 ${distance} miles \u2192 ${sigt} dB`;
                             }
                           }
