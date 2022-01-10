@@ -61,7 +61,8 @@ class Header extends Component {
           </tr>
         </table>
         {
-          !this.props.lastUpdated ? "" :
+          !this.props.lastUpdated ?
+            <div className="footer">Last updated {(new Date().toLocaleString())}</div> :
             <div>
               <div className="footer">Download CSV data <a href="data/out.csv" target="_blank">here</a></div>
               <div className="footer">Last updated {(new Date(this.props.lastUpdated).toLocaleString())}</div>
