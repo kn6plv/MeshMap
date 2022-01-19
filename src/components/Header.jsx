@@ -27,6 +27,14 @@ class Header extends Component {
     if (!this.props.appConfig) {
       return null;
     }
+    const counts = {
+      b900: this.countNodes(this.props.nodesData, 900),
+      b24: this.countNodes(this.props.nodesData, 24),
+      b34: this.countNodes(this.props.nodesData, 34),
+      b58: this.countNodes(this.props.nodesData, 58),
+      off: this.countNodes(this.props.nodesData, 'off'),
+      all: this.countNodes(this.props.nodesData, 'all')
+    };
     return (
       <div className="Header">
         <div className="title">{this.props.appConfig.name}</div>
@@ -35,29 +43,39 @@ class Header extends Component {
             <td>Band</td>
             <td>Nodes</td>
           </tr>
-          <tr>
-            <td>  <Image src="./magentaRadioCircle-icon.png" width={20}></Image> 900 MHz </td>
-            <td>{ this.countNodes(this.props.nodesData, 900)} </td>
-          </tr>
-          <tr>
-            <td> <Image src="./purpleRadioCircle-icon.png" width={20}></Image> 2.4 GHz </td>
-            <td>{this.countNodes(this.props.nodesData, 24)}</td>
-          </tr>
-          <tr>
-            <td> <Image src="./blueRadioCircle-icon.png" width={20}></Image> 3.4 GHz </td>
-            <td>{this.countNodes(this.props.nodesData, 34)}</td>
-          </tr>
-          <tr>
-            <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5 GHz </td>
-            <td>{this.countNodes(this.props.nodesData, 58)}</td>
-          </tr>
-          <tr>
-            <td><Image src="./grayRadioCircle-icon.png" width={20}></Image> No RF </td>
-            <td>{this.countNodes(this.props.nodesData, 'off')}</td>
-          </tr>
+          {
+            counts.b900 ? <tr>
+              <td>  <Image src="./magentaRadioCircle-icon.png" width={20}></Image> 900 MHz </td>
+              <td>{counts.b900}</td>
+            </tr> : ""
+          }
+          {
+            counts.b24 ? <tr>
+              <td> <Image src="./purpleRadioCircle-icon.png" width={20}></Image> 2.4 GHz </td>
+              <td>{counts.b24}</td>
+            </tr> : ""
+          }
+          {
+            counts.b34 ? <tr>
+              <td> <Image src="./blueRadioCircle-icon.png" width={20}></Image> 3.4 GHz </td>
+              <td>{counts.b34}</td>
+            </tr> : ""
+          }
+          {
+            counts.b58 ? <tr>
+              <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5 GHz </td>
+              <td>{counts.b58}</td>
+            </tr> : ""
+          }
+          {
+            counts.off ? <tr>
+              <td><Image src="./grayRadioCircle-icon.png" width={20}></Image> No RF </td>
+              <td>{counts.off}</td>
+            </tr> : ""
+          }
           <tr>
             <td style={{paddingLeft:33}}>Total</td>
-            <td>{this.countNodes(this.props.nodesData, 'all')}</td>
+            <td>{counts.all}</td>
           </tr>
         </table>
         {
