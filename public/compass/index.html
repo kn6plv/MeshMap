@@ -1,0 +1,270 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+<style>
+html, body {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  touch-action: none;
+}
+#intro {
+  position: absolute;
+  display: none;
+  height: 100%;
+  width: 100%;
+  z-index: 5;
+  background-color: rgba(0,0,0,0.8);
+  overflow: hidden;
+}
+#intro .t {
+  color: white;
+  padding-top: 200px;
+  font-size: 30px;
+  text-align: center;
+}
+#intro .d {
+  text-align: center;
+  color: white;
+  width: 300px;
+  padding: 20px 0 40px 0;
+  margin: 0 auto;
+}
+#intro button {
+  display: block;
+  background-color: black;
+  color: white;
+  font-size: 20px;
+  padding: 10px 30px;
+  margin: 0 auto;
+}
+#map {
+  position: absolute;
+  height: 2000px;
+  width: 2000px;
+  overflow: hidden;
+  z-index: 1;
+}
+#comp {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 60px;
+  width: 100%;
+  background-color: black;
+  z-index: 2;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-top: 4px;
+}
+.cs {
+  position: absolute;
+  color: white;
+  height: 18px;
+}
+.cs div {
+  position: relative;
+  left: -50%;
+  padding: 0px 5px;
+}
+.cs small {
+  font-size: 9px;
+  color: #eee;
+}
+</style>
+</head>
+<body>
+  <div id="intro">
+    <div class="t">Mesh Compass</div>
+    <div class="d">The Mesh Compass helps you locate the position of mesh nodes close to you.
+      To do this it requires your location and compass direction. No information is shared by this app.
+    </div>
+    <button>Okay</button>
+  </div>
+  <div id="map"></div>
+  <div id="comp"></div>
+  <script>
+    const ColorAll = '#707070';
+    const Color5 = '#FE974F';
+    const Color24 = '#80078C';
+
+    const radiosUrl = '/data/out.json';
+    let loc = null;
+    let radios = null;
+    let heading = 210;
+    const radioList = [];
+    const displayList = [];
+    const compRange = 10;
+    const compLineH = 19;
+
+    const d2r = (d) => d / 180 * Math.PI;
+    const r2d = (r) => r * 180 / Math.PI;
+    const r2m = (r) => r * 6371008.8 / 1609.344;
+    const ad = (a,b) => r2d(Math.atan2(Math.sin(d2r(a - b)), Math.cos(d2r(a - b))))
+
+    const m = document.getElementById('map');
+    const comp = document.getElementById('comp');
+    //m.style.top = -300 + document.body.offsetHeight / 2;
+    //m.style.left = -500 + document.body.offsetWidth / 2;
+
+    m.style.top = document.body.offsetHeight * 3 / 4 - m.clientHeight / 2;
+    m.style.left = document.body.offsetWidth / 2 - m.clientWidth / 2;
+
+    const map = L.map(m, {
+      dragging: false,
+      attributionControl: false,
+      zoomControl: false,
+      doubleClickZoom: false,
+      touchZoom: false,
+    });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    const updateRadios = () => {
+      if (!(radios && loc)) {
+        return;
+      }
+      const lon = d2r(loc.lng);
+      const lat = d2r(loc.lat);
+      radios.nodeInfo.forEach(node => {
+        const nodelon = parseFloat(node.data.lon);
+        const nodelat = parseFloat(node.data.lat);
+        const nlon = d2r(nodelon);
+        const nlat = d2r(nodelat);
+ 
+        const dLat = nlat - lat;
+        const dLon = nlon - lon;
+        const aa = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat) * Math.cos(nlat);
+        const distance = r2m(2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa)));
+
+        if (distance > 0.1 && node.data.meshrf.status !== "off") {
+          const a = Math.sin(nlon - lon) * Math.cos(nlat);
+          const b = Math.cos(lat) * Math.sin(nlat) - Math.sin(lat) * Math.cos(nlat) * Math.cos(nlon - lon);
+          const bearing = r2d(Math.atan2(a, b));
+          const div = document.createElement('div');
+          div.appendChild(document.createElement('div'));
+          div.className = 'cs';
+          div.firstElementChild.innerHTML = `${node.data.node} <small>${distance.toFixed(1)} miles</small>`;
+          radioList.push({
+            loc: [ nodelat, nodelon ],
+            bearing: bearing,
+            distance: distance,
+            rf: node.data.meshrf,
+            div: div,
+          });
+        }
+      });
+      radioList.sort((a, b) => a.distance - b.distance);
+
+      for (let i = 0; i < 20 && i < radioList.length; i++) {
+        const r = radioList[i];
+        displayList.push(r);
+        let color = ColorAll;
+        if (r.rf.freq.startsWith('5')) {
+          color = Color5;
+        }
+        else if (r.rf.freq.startsWith('2')) {
+          color = Color24;
+        }
+        L.polyline([[ loc.lat, loc.lng ], r.loc ], {
+          color: color,
+          weight: 1,
+        }).addTo(map);
+      }
+    }
+
+    const updateComp = () => {
+      for (let i = 0; i < displayList.length; i++) {
+        const d = displayList[i];
+        if (d.div.parentNode) {
+          const diff = ad(heading, d.bearing);
+          if (Math.abs(diff) > compRange * 2) {
+            d.div.remove();
+          }
+          else {
+            d.div.style.left = `${50 - 50 * diff / compRange}%`;
+          }
+        }
+      }
+      for (let i = 0; i < displayList.length; i++) {
+        const d = displayList[i];
+        if (!d.div.parentNode) {
+          const diff = ad(heading, d.bearing);
+          if (Math.abs(diff) < compRange * 2) {
+            comp.appendChild(d.div);
+            d.div.style.left = `${50 - 50 * diff / compRange}%`;
+            let t;
+            for (t = 0; t < 3; t++) {
+              d.div.style.top = `${t * compLineH}px`;
+              const dr = d.div.getBoundingClientRect();
+              const collide = () => {
+                for (let j = 0; j < displayList.length; j++) {
+                  const o = displayList[j];
+                  if (o != d && o.div.parentNode) {
+                    const or = o.div.getBoundingClientRect()
+                    if (!(dr.top > or.bottom || dr.right < or.left || dr.bottom < or.top || dr.left > or.right)) {
+                      return true;
+                    }
+                  }
+                }
+                return false;
+              }
+              if (!collide()) {
+                break;
+              }
+            }
+            if (t == 3) {
+              d.div.remove();
+            }
+          }
+        }
+      }
+    }
+
+    map.on('locationfound', e => {
+      L.circle(e.latlng, {
+        color: 'green',
+        fillColor: 'green',
+        fillOpacity: 1.0,
+        radius: 10
+      }).addTo(map);
+      loc = e.latlng;
+      updateRadios();
+    });
+
+    window.addEventListener('deviceorientation', e => {
+      heading = e.webkitCompassHeading;
+      m.style.transform = `rotate(-${heading}deg)`;
+      updateComp();
+   });
+
+    fetch(radiosUrl).then(r => r.json()).then(j => {
+      radios = j;
+      updateRadios();
+    });
+
+    if (window.DeviceOrientationEvent && typeof(window.DeviceOrientationEvent.requestPermission) === 'function') {
+      DeviceOrientationEvent.requestPermission().then(g => {
+        map.locate({ setView: true, maxZoom: 17 });
+      }).catch(e => {
+        const i = document.getElementById('intro');
+        i.style.display = 'block';
+        i.getElementsByTagName('button')[0].addEventListener('click', () => {
+          i.style.display = 'none';
+          map.locate({ setView: true, maxZoom: 17 });
+          DeviceOrientationEvent.requestPermission();
+        });
+      });
+    }
+    else {
+      map.locate({ setView: true, maxZoom: 17 });
+    }
+
+  </script>
+</body>
+</html>
