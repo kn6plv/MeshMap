@@ -55,27 +55,35 @@ html, body {
   position: absolute;
   top: 0;
   left: 0;
-  height: 60px;
+  height: 68px;
   width: 100%;
   background-color: black;
   z-index: 2;
   overflow: hidden;
   white-space: nowrap;
-  padding-top: 4px;
 }
 .cs {
   position: absolute;
   color: white;
   height: 18px;
 }
-.cs div {
+.cs .l {
   position: relative;
   left: -50%;
   padding: 0px 5px;
+  font-size: 16px;
+  line-height: 18px;
+  vertical-align: center;
+}
+.cs .i {
+  display: inline-block;
+  margin-left: 4px;
 }
 .cs small {
-  font-size: 9px;
+  display: block;
+  font-size: 8px;
   color: #eee;
+  line-height: 9px;
 }
 </style>
 </head>
@@ -110,8 +118,6 @@ html, body {
 
     const m = document.getElementById('map');
     const comp = document.getElementById('comp');
-    //m.style.top = -300 + document.body.offsetHeight / 2;
-    //m.style.left = -500 + document.body.offsetWidth / 2;
 
     m.style.top = document.body.offsetHeight * 3 / 4 - m.clientHeight / 2;
     m.style.left = document.body.offsetWidth / 2 - m.clientWidth / 2;
@@ -147,9 +153,9 @@ html, body {
           const b = Math.cos(lat) * Math.sin(nlat) - Math.sin(lat) * Math.cos(nlat) * Math.cos(nlon - lon);
           const bearing = r2d(Math.atan2(a, b));
           const div = document.createElement('div');
-          div.appendChild(document.createElement('div'));
+          div.appendChild(document.createElement('div')).className = 'l';
           div.className = 'cs';
-          div.firstElementChild.innerHTML = `${node.data.node} <small>${distance.toFixed(1)} miles</small>`;
+          div.firstElementChild.innerHTML = `${node.data.node}<div class="i"><small>Channel ${node.data.meshrf.channel}</small><small>${distance.toFixed(1)} miles</small></div>`;
           radioList.push({
             loc: [ nodelat, nodelon ],
             bearing: bearing,
@@ -200,7 +206,7 @@ html, body {
             d.div.style.left = `${50 - 50 * diff / compRange}%`;
             let t;
             for (t = 0; t < 3; t++) {
-              d.div.style.top = `${t * compLineH}px`;
+              d.div.style.top = `${4 + t * compLineH}px`;
               const dr = d.div.getBoundingClientRect();
               const collide = () => {
                 for (let j = 0; j < displayList.length; j++) {
