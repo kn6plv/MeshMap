@@ -4,14 +4,6 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 <style>
-@media (orientation:landscape) {
-  #intro, #map, #comp {
-    display: none;
-  }
-  body {
-    background-color: grey;
-  }
-}
 html, body {
   position: absolute;
   height: 100%;
@@ -113,7 +105,8 @@ html, body {
     const radiosUrl = '/data/out.json';
     let loc = null;
     let radios = null;
-    let heading = 210;
+    let heading = 0;
+    let compassOffset = 0;
     const radioList = [];
     const displayList = [];
     const compRange = 10;
@@ -127,8 +120,14 @@ html, body {
     const m = document.getElementById('map');
     const comp = document.getElementById('comp');
 
-    m.style.top = document.body.offsetHeight * 3 / 4 - m.clientHeight / 2;
-    m.style.left = document.body.offsetWidth / 2 - m.clientWidth / 2;
+    const ori = () => {
+      compassOffset = (360 + window.orientation) % 360;
+      m.style.top = document.body.offsetHeight * 3 / 4 - m.clientHeight / 2;
+      m.style.left = document.body.offsetWidth / 2 - m.clientWidth / 2;
+    }
+
+    window.addEventListener('orientationchange', () => setTimeout(ori, 100));
+    ori();
 
     const map = L.map(m, {
       dragging: false,
@@ -267,7 +266,7 @@ html, body {
         if (g.every(r => r.state === "granted")) {
           sensor.addEventListener('reading', e => {
             const q = e.target.quaternion;
-            heading = r2d(Math.atan2(2 * q[0] * q[1] + 2 * q[2] * q[3], 1 - 2 * q[1] * q[1] - 2 * q[2] * q[2]));
+            heading = compassOffset + r2d(Math.atan2(2 * q[0] * q[1] + 2 * q[2] * q[3], 1 - 2 * q[1] * q[1] - 2 * q[2] * q[2]));
             m.style.transform = `rotate(-${heading}deg)`;
             updateComp();
           });
@@ -289,10 +288,10 @@ html, body {
       });
       window.addEventListener('deviceorientation', e => {
         if (e.absolute) {
-          heading = e.alpha;
+          heading = compassOffset + e.alpha;
         }
         else if ('webkitCompassHeading' in e) {
-          heading = e.webkitCompassHeading;
+          heading = compassOffset + e.webkitCompassHeading;
         }
         m.style.transform = `rotate(-${heading}deg)`;
         updateComp();
