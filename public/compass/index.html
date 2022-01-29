@@ -266,7 +266,7 @@ html, body {
         if (g.every(r => r.state === "granted")) {
           sensor.addEventListener('reading', e => {
             const q = e.target.quaternion;
-            heading = compassOffset + r2d(Math.atan2(2 * q[0] * q[1] + 2 * q[2] * q[3], 1 - 2 * q[1] * q[1] - 2 * q[2] * q[2]));
+            heading = (360 + compassOffset + r2d(Math.atan2(2 * q[0] * q[1] + 2 * q[2] * q[3], 1 - 2 * q[1] * q[1] - 2 * q[2] * q[2]))) % 360;
             m.style.transform = `rotate(-${heading}deg)`;
             updateComp();
           });
@@ -288,10 +288,10 @@ html, body {
       });
       window.addEventListener('deviceorientation', e => {
         if (e.absolute) {
-          heading = compassOffset + e.alpha;
+          heading = (360 + compassOffset + e.alpha) % 360;
         }
         else if ('webkitCompassHeading' in e) {
-          heading = compassOffset + e.webkitCompassHeading;
+          heading = (360 + compassOffset + e.webkitCompassHeading) % 360;
         }
         m.style.transform = `rotate(-${heading}deg)`;
         updateComp();
