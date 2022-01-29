@@ -251,23 +251,31 @@ html, body {
       updateRadios();
     });
 
-    window.addEventListener('deviceorientation', e => {
-      if (e.absolute) {
-        heading = e.alpha;
-      }
-      else if ('webkitCompassHeading' in e) {
-        heading = e.webkitCompassHeading;
-      }
-      m.style.transform = `rotate(-${heading}deg)`;
-      updateComp();
-   });
-
     fetch(radiosUrl).then(r => r.json()).then(j => {
       radios = j;
       updateRadios();
     });
 
-    if (window.DeviceOrientationEvent && typeof(window.DeviceOrientationEvent.requestPermission) === 'function') {
+    if (window.AbsoluteOrientationSensor && navigator.permissions && navigator.permissions.query) {
+      const sensor = new AbsoluteOrientationSensor({ frequency: 60, referenceFrame: 'device' });
+      Promise.all([
+        navigator.permissions.query({ name: "accelerometer" }),
+        navigator.permissions.query({ name: "magnetometer" }),
+        navigator.permissions.query({ name: "gyroscope" })]
+      ).then(g => {
+        map.locate({ setView: true, maxZoom: 17 });
+        if (g.every(r => r.state === "granted")) {
+          sensor.addEventListener('reading', e => {
+            const q = e.target.quaternion;
+            heading = r2d(Math.atan2(2 * q[0] * q[1] + 2 * q[2] * q[3], 1 - 2 * q[1] * q[1] - 2 * q[2] * q[2]));
+            m.style.transform = `rotate(-${heading}deg)`;
+            updateComp();
+          });
+          sensor.start();
+        }
+      });
+    }
+    else if (window.DeviceOrientationEvent && typeof(window.DeviceOrientationEvent.requestPermission) === 'function') {
       DeviceOrientationEvent.requestPermission().then(g => {
         map.locate({ setView: true, maxZoom: 17 });
       }).catch(e => {
@@ -278,6 +286,16 @@ html, body {
           map.locate({ setView: true, maxZoom: 17 });
           DeviceOrientationEvent.requestPermission();
         });
+      });
+      window.addEventListener('deviceorientation', e => {
+        if (e.absolute) {
+          heading = e.alpha;
+        }
+        else if ('webkitCompassHeading' in e) {
+          heading = e.webkitCompassHeading;
+        }
+        m.style.transform = `rotate(-${heading}deg)`;
+        updateComp();
       });
     }
     else {
