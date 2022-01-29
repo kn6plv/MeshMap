@@ -252,7 +252,12 @@ html, body {
     });
 
     window.addEventListener('deviceorientation', e => {
-      heading = e.webkitCompassHeading;
+      if (e.absolute) {
+        heading = e.alpha;
+      }
+      else if ('webkitCompassHeading' in e) {
+        heading = e.webkitCompassHeading;
+      }
       m.style.transform = `rotate(-${heading}deg)`;
       updateComp();
    });
