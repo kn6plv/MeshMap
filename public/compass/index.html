@@ -110,7 +110,7 @@ html, body {
     const radioList = [];
     const displayList = [];
     const compRange = 10;
-    const compLineH = 19;
+    const compLineH = 21;
     const compLines = 4;
 
     const d2r = (d) => d / 180 * Math.PI;
@@ -222,12 +222,12 @@ html, body {
             let t;
             for (t = 0; t < compLines; t++) {
               d.div.style.top = `${4 + t * compLineH}px`;
-              const dr = d.div.getBoundingClientRect();
+              const dr = d.div.firstChild.getBoundingClientRect();
               const collide = () => {
                 for (let j = 0; j < displayList.length; j++) {
                   const o = displayList[j];
                   if (o != d && o.div.parentNode) {
-                    const or = o.div.getBoundingClientRect()
+                    const or = o.div.firstChild.getBoundingClientRect()
                     if (!(dr.top > or.bottom || dr.right < or.left || dr.bottom < or.top || dr.left > or.right)) {
                       return true;
                     }
