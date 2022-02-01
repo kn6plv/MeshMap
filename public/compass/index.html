@@ -268,7 +268,7 @@ html, body {
         if (g.every(r => r.state === "granted")) {
           sensor.addEventListener('reading', e => {
             const q = e.target.quaternion;
-            heading = (360 + compassOffset + r2d(Math.atan2(2 * q[0] * q[1] + 2 * q[2] * q[3], 1 - 2 * q[1] * q[1] - 2 * q[2] * q[2]))) % 360;
+            heading = Math.floor(360 + compassOffset - r2d(Math.atan2(2 * q[0] * q[1] + 2 * q[2] * q[3], 1 - 2 * q[1] * q[1] - 2 * q[2] * q[2]))) % 360;
             m.style.transform = `rotate(-${heading}deg)`;
             updateComp();
           });
