@@ -3,7 +3,9 @@ import { Image } from "react-bootstrap";
 
 class Header extends Component {
 
-  state = { }
+  state = { 
+    selected: 'all'
+  }
 
   countNodes(nodesData, band) {
     switch(band) {
@@ -21,6 +23,14 @@ class Header extends Component {
       default:
         return this.countNodes(nodesData, 900) + this.countNodes(nodesData, 900) + this.countNodes(nodesData, 24) + this.countNodes(nodesData, 34) + this.countNodes(nodesData, 58) + this.countNodes(nodesData, 'off');
     }
+  }
+
+  selectNodes(type) {
+    if (type === this.state.selected) {
+      type = 'all';
+    }
+    this.setState({ selected: type });
+    this.props.selectNodes(type);
   }
 
   render() {
@@ -44,32 +54,32 @@ class Header extends Component {
             <td>Nodes</td>
           </tr>
           {
-            counts.b900 ? <tr>
-              <td>  <Image src="./magentaRadioCircle-icon.png" width={20}></Image> 900 MHz </td>
+            counts.b900 ? <tr className={ 'b900-' + this.state.selected }>
+              <td><a href="#" onClick={()=>this.selectNodes('900')}><Image src="./magentaRadioCircle-icon.png" width={20}></Image> 900 MHz</a></td>
               <td>{counts.b900}</td>
             </tr> : ""
           }
           {
-            counts.b24 ? <tr>
-              <td> <Image src="./purpleRadioCircle-icon.png" width={20}></Image> 2.4 GHz </td>
+            counts.b24 ? <tr className={ 'b24-' + this.state.selected }>
+              <td><a href="#" onClick={()=>this.selectNodes('24')}><Image src="./purpleRadioCircle-icon.png" width={20}></Image> 2.4 GHz</a></td>
               <td>{counts.b24}</td>
             </tr> : ""
           }
           {
-            counts.b34 ? <tr>
-              <td> <Image src="./blueRadioCircle-icon.png" width={20}></Image> 3.4 GHz </td>
+            counts.b34 ? <tr className={ 'b34-' + this.state.selected }>
+              <td><a href="#" onClick={()=>this.selectNodes('34')}><Image src="./blueRadioCircle-icon.png" width={20}></Image> 3.4 GHz</a></td>
               <td>{counts.b34}</td>
             </tr> : ""
           }
           {
-            counts.b58 ? <tr>
-              <td><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5 GHz </td>
+            counts.b58 ? <tr className={ 'b58-' + this.state.selected }>
+              <td><a href="#" onClick={()=>this.selectNodes('58')}><Image src="./goldRadioCircle-icon.png" width={20}></Image> 5 GHz</a></td>
               <td>{counts.b58}</td>
             </tr> : ""
           }
           {
-            counts.off ? <tr>
-              <td><Image src="./grayRadioCircle-icon.png" width={20}></Image> No RF </td>
+            counts.off ? <tr className={ 'off-' + this.state.selected }>
+              <td><a href="#" onClick={()=>this.selectNodes('off')}><Image src="./grayRadioCircle-icon.png" width={20}></Image> No RF</a></td>
               <td>{counts.off}</td>
             </tr> : ""
           }

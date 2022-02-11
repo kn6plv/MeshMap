@@ -49,6 +49,18 @@ body {
   padding-bottom: 10px;
 }
 
+.Header a {
+  color: inherit;
+}
+
+.b900-24, .b900-34, .b900-58, .b900-off,
+.b24-900, .b24-34, .b24-58, .b24-off,
+.b34-900, .b34-24, .b34-58, .b34-off,
+.b58-900, .b58-24, .b58-34, .b58-off,
+.off-900, .off-24, .off-34, .off-58 {
+  color: grey;
+}
+
 .Map {
   height: 100vh;
   z-index: 1;

@@ -87,11 +87,44 @@ class BaArednMap extends Component {
     const tunconns = [];
     const dtdconns = [];
     const nodes = {};
+    const validnodes = {};
     const done = {};
     this.props.nodesData.forEach(n => nodes[this.canonicalHostname(n.node)] = n);
     this.props.nodesData.forEach(n => {
       if (!n.lat || !n.lon) {
         return;
+      }
+      const icon = getIcon(n.meshrf);
+      switch (this.props.selected) {
+        case '900':
+          if (icon !== MagentaIcon) {
+            return;
+          }
+          break;
+        case '24':
+          if (icon !== PurpleIcon) {
+            return;
+          }
+          break;
+        case '34':
+          if (icon !== BlueIcon) {
+            return;
+          }
+          break;
+        case '58':
+          if (icon !== OrangeIcon) {
+            return;
+          }
+          break;
+        case 'off':
+          if (icon !== GrayIcon) {
+            return;
+          }
+          break;
+        case 'all':
+          break;
+        default:
+          return;
       }
       const fn = this.canonicalHostname(n.node);
       n.link_info.forEach(m => {
@@ -119,6 +152,7 @@ class BaArednMap extends Component {
           done[`${fn}/${tn}`] = true;
         }
       });
+      validnodes[fn] = n;
     });
     const mapCenter = [this.props.appConfig.mapSettings.mapCenter.lat, this.props.appConfig.mapSettings.mapCenter.lon];
     return (
@@ -155,7 +189,7 @@ class BaArednMap extends Component {
           )
         }
         { 
-          this.props.nodesData.map(n =>
+          Object.values(validnodes).map(n =>
             <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf) }>
               <Popup minWidth="240" maxWidth="380"> {
                 <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>

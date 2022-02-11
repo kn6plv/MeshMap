@@ -17,7 +17,8 @@ class App extends Component {
   state = {
     appConfig: null,
     nodesData: [],
-    lastUpdated: null
+    lastUpdated: null,
+    selected: 'all'
   }
 
   // Get the details from the node. Recieves the name of the node.
@@ -103,10 +104,13 @@ class App extends Component {
   }
 
   render() {
+    const selectNodes = (type) => {
+      this.setState({ selected: type });
+    }
     return (
       <div>
-        <Header nodesData={this.state.nodesData} appConfig={this.state.appConfig} lastUpdated={this.state.lastUpdated}/>
-        <BaArednMap nodesData={this.state.nodesData} appConfig={this.state.appConfig}/>
+        <Header nodesData={this.state.nodesData} appConfig={this.state.appConfig} lastUpdated={this.state.lastUpdated} selectNodes={selectNodes}/>
+        <BaArednMap nodesData={this.state.nodesData} selected={this.state.selected} appConfig={this.state.appConfig}/>
       </div>
     );
   }
