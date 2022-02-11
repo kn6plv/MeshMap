@@ -84,7 +84,7 @@ class Header extends Component {
             </tr> : ""
           }
           <tr>
-            <td style={{paddingLeft:33}}>Total</td>
+            <td style={{paddingLeft:33}}><a href="#" onClick={()=>this.selectNodes('all')}>Total</a></td>
             <td>{counts.all}</td>
           </tr>
         </table>
