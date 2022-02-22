@@ -25,7 +25,7 @@ class App extends Component {
   async retrieveNodeDetails(node)
   {
     try {
-      const nodeInfo = await axios.get(`http://${node.ip}${sysinfo.resource}/?${sysinfo.params.link_info}`)
+      const nodeInfo = await axios.get(`http://${node.name}.local.mesh:8080${sysinfo.resource}/?${sysinfo.params.link_info}`)
       if (nodeInfo.status === 200 && nodeInfo.data.lat && nodeInfo.data.lon) {
         const node = {
           node: nodeInfo.data.node,
@@ -50,7 +50,7 @@ class App extends Component {
     try {
       // Get the list of nodes / hosts before to retrieve the nodes information.
       const start = this.state.appConfig.mapSettings.mapCenter.node || "localnode";
-      const nodes =  await axios.get(`http://${start}.local.mesh${sysinfo.resource}${sysinfo.params.hosts}`)
+      const nodes =  await axios.get(`http://${start}.local.mesh:8080${sysinfo.resource}${sysinfo.params.hosts}`)
       // Get only the ones that matches the format CALLSIGN-CITY-COUNTRY-TYPE#NODENUMBER
       const regex = new RegExp(this.state.appConfig.nodesFilter);
       const filteredNodeList = nodes.data.hosts.filter(h => h.name.toUpperCase().trim().match(regex))
