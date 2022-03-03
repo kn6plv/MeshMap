@@ -47,23 +47,26 @@ class App extends Component {
   }
 
   async getNodesData() {
-    try {
-      // Get the list of nodes / hosts before to retrieve the nodes information.
-      const start = this.state.appConfig.mapSettings.mapCenter.node || "localnode";
-      const nodes =  await axios.get(`http://${start}.local.mesh:8080${sysinfo.resource}${sysinfo.params.hosts}`)
-      // Get only the ones that matches the format CALLSIGN-CITY-COUNTRY-TYPE#NODENUMBER
-      const regex = new RegExp(this.state.appConfig.nodesFilter);
-      const filteredNodeList = nodes.data.hosts.filter(h => h.name.toUpperCase().trim().match(regex))
-      // Iterate thru each node to get the details.
-      Object.keys(filteredNodeList).forEach(key => this.retrieveNodeDetails(filteredNodeList[key]));
-    }
-    catch(e) {
+    if (!this.state.appConfig.offline) {
       try {
-        await this.getStoredNodesData()
+        // Get the list of nodes / hosts before to retrieve the nodes information.
+        const start = this.state.appConfig.mapSettings.mapCenter.node || "localnode";
+        const nodes =  await axios.get(`http://${start}.local.mesh:8080${sysinfo.resource}${sysinfo.params.hosts}`)
+        // Get only the ones that matches the format CALLSIGN-CITY-COUNTRY-TYPE#NODENUMBER
+        const regex = new RegExp(this.state.appConfig.nodesFilter);
+        const filteredNodeList = nodes.data.hosts.filter(h => h.name.toUpperCase().trim().match(regex))
+        // Iterate thru each node to get the details.
+        Object.keys(filteredNodeList).forEach(key => this.retrieveNodeDetails(filteredNodeList[key]));
+        return;
       }
-      catch (e) {
-        alertify.alert("Unable to find your AREDN node, please verify if you are connected to the MESH.");
+      catch(e) {
       }
+    }
+    try {
+      await this.getStoredNodesData()
+    }
+    catch (e) {
+      alertify.alert("Unable to find your AREDN node, please verify if you are connected to the MESH.");
     }
   }
 

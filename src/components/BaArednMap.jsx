@@ -154,6 +154,9 @@ class BaArednMap extends Component {
       });
       validnodes[fn] = n;
     });
+    const mhref = (n) => {
+      return this.props.appConfig.offline ? <a>{n.node}</a> : <a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a>
+    }
     const mapCenter = [this.props.appConfig.mapSettings.mapCenter.lat, this.props.appConfig.mapSettings.mapCenter.lon];
     return (
       <Map ref="map" className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={false}>
@@ -192,7 +195,7 @@ class BaArednMap extends Component {
           Object.values(validnodes).map(n =>
             <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.lat,n.lon]} icon={ getIcon(n.meshrf) }>
               <Popup minWidth="240" maxWidth="380"> {
-                <div><h6><a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a></h6>
+                <div><h6>{mhref(n)}</h6>
                   <table>
                     <tr style={{verticalAlign:"top"}}><td>Description</td><td>{n.node_details.description}</td></tr>
                     <tr><td>Location</td><td>{n.lat},{n.lon}</td></tr>

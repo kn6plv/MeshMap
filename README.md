@@ -40,7 +40,8 @@ To change the configuration:
         "name": "Tim Wilkinson",
         "email": "tim.j.wilkinson@gmail.com"
     },
-    "nodesFilter" : "[a-zA-z]+[0-9][a-zA-Z]+"
+    "nodesFilter" : "[a-zA-z]+[0-9][a-zA-Z]+",
+    "offline" : false
 }
 ```
 
