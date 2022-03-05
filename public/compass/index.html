@@ -85,6 +85,12 @@ html, body {
   color: #eee;
   line-height: 9px;
 }
+.desktop {
+  color: white;
+  text-align: center;
+  font-size: 28px;
+  padding-top: 28px;
+}
 </style>
 </head>
 <body>
@@ -199,7 +205,15 @@ html, body {
       }).addTo(map);
     }
 
+    const isMobile = () => {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
     const updateComp = () => {
+      if (!isMobile()) {
+        comp.innerHTML = '<div class="desktop">This works best when used on a mobile device</div>';
+        return;
+      }
       for (let i = 0; i < displayList.length; i++) {
         const d = displayList[i];
         if (d.div.parentNode) {
@@ -246,6 +260,7 @@ html, body {
         }
       }
     }
+    updateComp();
 
     map.on('locationfound', e => {
       loc = e.latlng;
@@ -302,7 +317,6 @@ html, body {
     else {
       map.locate({ setView: true, maxZoom: 17 });
     }
-
   </script>
 </body>
 </html>
