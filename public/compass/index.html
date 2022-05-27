@@ -317,6 +317,21 @@ html, body {
     else {
       map.locate({ setView: true, maxZoom: 17 });
     }
+
+    let mouseStart = 0;
+    comp.addEventListener("touchstart", e => {
+      mouseStart = e.touches.item(0).clientX;
+    });
+    comp.addEventListener("touchmove", e => {
+      const x = e.touches.item(0).clientX;
+      if (x < mouseStart) {
+        compassOffset += 0.5;
+      }
+      else {
+        compassOffset -= 0.5;
+      }
+      mouseStart = x;
+    });
   </script>
 </body>
 </html>
