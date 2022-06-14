@@ -35,7 +35,8 @@ class App extends Component {
           chanbw: nodeInfo.data.chanbw,
           node_details: nodeInfo.data.node_details,
           interfaces: nodeInfo.data.interfaces,
-          link_info: Object.keys(nodeInfo.data.link_info || {}).map((key) => nodeInfo.data.link_info[key])
+          link_info: Object.keys(nodeInfo.data.link_info || {}).map((key) => nodeInfo.data.link_info[key]),
+          lqm: nodeInfo.data.lqm
         };
 
         //  Add this node to the state
@@ -84,7 +85,8 @@ class App extends Component {
             chanbw: nodeInfo.data.chanbw,
             node_details: nodeInfo.data.node_details,
             interfaces: nodeInfo.data.interfaces,
-            link_info: Object.keys(nodeInfo.data.link_info || {}).map((key) => nodeInfo.data.link_info[key])
+            link_info: Object.keys(nodeInfo.data.link_info || {}).map((key) => nodeInfo.data.link_info[key]),
+            lqm: nodeInfo.data.lqm
           });
         }
       });
