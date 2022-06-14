@@ -205,6 +205,7 @@ class BaArednMap extends Component {
                         <tr style={{verticalAlign:"top"}}><td>Channel</td><td>{n.meshrf.channel}</td></tr>
                         <tr><td>Frequency</td><td>{n.meshrf.freq}</td></tr>
                         <tr><td>Bandwidth</td><td>{n.meshrf.chanbw} MHz</td></tr>
+                        <tr><td>LQM</td><td>{n.lqm && n.lqm.enabled ? 'Enabled' : n.lqm ? 'Disabled' : 'Unavailable'}</td></tr>
                         <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
                         </tbody>
                     }
