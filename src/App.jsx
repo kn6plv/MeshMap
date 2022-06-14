@@ -25,7 +25,7 @@ class App extends Component {
   async retrieveNodeDetails(node)
   {
     try {
-      const nodeInfo = await axios.get(`http://${node.name}.local.mesh:8080${sysinfo.resource}/?${sysinfo.params.link_info}`)
+      const nodeInfo = await axios.get(`http://${node.name}.local.mesh:8080${sysinfo.resource}?${sysinfo.params.link_info}&${sysinfo.params.lqm}`)
       if (nodeInfo.status === 200 && nodeInfo.data.lat && nodeInfo.data.lon) {
         const node = {
           node: nodeInfo.data.node,

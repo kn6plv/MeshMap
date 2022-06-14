@@ -26,7 +26,7 @@ To change the configuration:
     "mapSettings": {
         "zoom": "10",
         "mapCenter": {
-            "node": "kn6plv-brkoxfla-omni",
+            "node": "kn6plv-brkoxfla-arecibo",
             "lat": "37.8880",
             "lon": "-122.2679"
         },
