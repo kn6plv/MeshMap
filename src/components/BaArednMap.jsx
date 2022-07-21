@@ -143,7 +143,14 @@ class BaArednMap extends Component {
               tunconns.push(conn);
               break;
             case 'DTD':
-              dtdconns.push(conn);
+              const dfrom = Turf.point([ n.lon, n.lat ]);
+              const dto = Turf.point([ to.lon, to.lat ]);
+              if (Turf.distance(dfrom, dto, { units: "meters" }) < 50) {
+                dtdconns.push(conn);
+              }
+              else {
+                rfconns.push(conn);
+              }
               break;
             default:
               break;
