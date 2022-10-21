@@ -93,6 +93,7 @@ class Header extends Component {
             <div className="footer">Last updated {(new Date().toLocaleString())}</div> :
             <div>
               <div className="footer">Download CSV data <a href="data/out.csv" target="_blank">here</a></div>
+              <div className="footer">And KML data <a href="data/out.kml" target="_blank">here</a></div>
               <div className="footer">Mesh map phone compass <a href="compass">here</a></div>
               <div className="footer">Last updated {(new Date(this.props.lastUpdated).toLocaleString())}</div>
             </div>
