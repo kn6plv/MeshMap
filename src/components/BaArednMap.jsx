@@ -177,7 +177,7 @@ class BaArednMap extends Component {
         />
         {
           rfconns.map(conn =>
-            <Polyline color="lime" weight="2" positions={conn.pos}>
+            <Polyline color="limegreen" weight="2" positions={conn.pos}>
               <Popup maxWidth="500">
                 <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
               </Popup>
@@ -204,7 +204,7 @@ class BaArednMap extends Component {
         }
         {
           rfdtdconns.map(conn =>
-            <Polyline color="yellow" weight="2" dashArray="2 6" positions={conn.pos}>
+            <Polyline color="limegreen" weight="3" dashArray="2 6" positions={conn.pos}>
               <Popup maxWidth="500">
                 <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
               </Popup>

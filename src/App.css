@@ -53,6 +53,11 @@ body {
   color: inherit;
 }
 
+.Header img {
+  position: relative;
+  top: -2px;
+}
+
 .b900-24, .b900-34, .b900-58, .b900-off,
 .b24-900, .b24-34, .b24-58, .b24-off,
 .b34-900, .b34-24, .b34-58, .b34-off,
