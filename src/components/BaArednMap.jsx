@@ -13,22 +13,22 @@ const PurpleIcon = new Icon({
 })
 
 const OrangeIcon = new Icon({
-  iconUrl: "./goldRadioCircle-icon.png",
+  iconUrl: "./mesh_icon_75px_gold.png",
   iconSize: [25, 25],
 })
 
 const BlueIcon = new Icon({
-  iconUrl: "./blueRadioCircle-icon.png",
+  iconUrl: "./mesh_icon_75px_blue.png",
   iconSize: [25, 25],
 })
 
 const MagentaIcon = new Icon({
-  iconUrl: "./magentaRadioCircle-icon.png",
+  iconUrl: "./mesh_icon_75px_purple.png",
   iconSize: [25, 25],
 })
 
 const GrayIcon = new Icon({
-  iconUrl: "./grayRadioCircle-icon.png",
+  iconUrl: "./mesh_icon_75px_gray.png",
   iconSize: [25, 25],
 })
 
