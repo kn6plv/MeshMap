@@ -4,8 +4,8 @@
         "zoom": "10",
         "mapCenter": {
             "node": "kn6plv-brkoxfla-arecibo",
-            "lat": "37.8880",
-            "lon": "-122.2679"
+            "lat": "37.7007",
+            "lon": "-122.0852"
         },
         "servers": [
             { "test": "http://kn6plv-tiles.local.mesh/tile/10/164/395.png", "url": "http://kn6plv-tiles.local.mesh/tile/{z}/{x}/{y}.png" },
