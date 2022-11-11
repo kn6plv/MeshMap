@@ -8,7 +8,7 @@ import hardware from "../hardware";
 const Turf = require('@turf/turf');
 
 const PurpleIcon = new Icon({
-  iconUrl: "./purpleRadioCircle-icon.png",
+  iconUrl: "./mesh_icon_75px_purple.png",
   iconSize: [25, 25],
 })
 
