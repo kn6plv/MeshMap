@@ -217,7 +217,7 @@ class BaArednMap extends Component {
         }
         { 
           Object.values(validnodes).map(n =>
-            <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.mlat||n.lat,n.mlat||n.lon]} icon={ getIcon(n.meshrf) }>
+            <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.mlat||n.lat,n.mlon||n.lon]} icon={ getIcon(n.meshrf) }>
               <Popup minWidth="240" maxWidth="380"> {
                 <div><h6>{mhref(n)}</h6>
                   <table>
