@@ -92,9 +92,7 @@ class BaArednMap extends Component {
     const done = {};
     this.props.nodesData.forEach(n => nodes[this.canonicalHostname(n.node)] = n);
     this.props.nodesData.forEach(n => {
-      const nlat = n.mlat || n.lat;
-      const nlon = n.mlon || n.lon;
-      if (!(nlat && nlon)) {
+      if (!(n.lat && n.lon)) {
         return;
       }
       const icon = getIcon(n.meshrf);
@@ -134,12 +132,10 @@ class BaArednMap extends Component {
         const tn = this.canonicalHostname(m.hostname);
         const to = nodes[tn];
         if (to) {
-          const tlat = to.mlat || to.lat;
-          const tlon = to.mlon || to.lon;
           if (!to.lat || !to.lon || done[`${tn}/${fn}`]) {
             return;
           }
-          const conn = { pos: [[ nlat, nlon ], [ tlat, tlon ]], from: fn, to: tn };
+          const conn = { pos: [[ n.lat, n.lon ], [ to.lat, to.lon ]], from: fn, to: tn };
           switch (m.linkType) {
             case 'RF':
               rfconns.push(conn);
@@ -148,8 +144,8 @@ class BaArednMap extends Component {
               tunconns.push(conn);
               break;
             case 'DTD':
-              const dfrom = Turf.point([ nlon, nlat ]);
-              const dto = Turf.point([ tlon, tlat ]);
+              const dfrom = Turf.point([ n.lon, n.lat ]);
+              const dto = Turf.point([ to.lon, to.lat ]);
               if (Turf.distance(dfrom, dto, { units: "meters" }) < 50) {
                 dtdconns.push(conn);
               }
@@ -217,7 +213,7 @@ class BaArednMap extends Component {
         }
         { 
           Object.values(validnodes).map(n =>
-            <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.mlat||n.lat,n.mlon||n.lon]} icon={ getIcon(n.meshrf) }>
+            <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.mlat,n.mlon]} icon={ getIcon(n.meshrf) }>
               <Popup minWidth="240" maxWidth="380"> {
                 <div><h6>{mhref(n)}</h6>
                   <table>
