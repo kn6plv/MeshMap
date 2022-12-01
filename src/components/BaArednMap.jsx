@@ -92,7 +92,7 @@ class BaArednMap extends Component {
     const done = {};
     this.props.nodesData.forEach(n => nodes[this.canonicalHostname(n.node)] = n);
     this.props.nodesData.forEach(n => {
-      if (!(n.lat && n.lon)) {
+      if (!(n.mlat && n.mlon)) {
         return;
       }
       const icon = getIcon(n.meshrf);
