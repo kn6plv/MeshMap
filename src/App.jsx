@@ -78,11 +78,11 @@ class App extends Component {
       const stored = await axios.get('data/out.json');
       const nodesData = [];
       stored.data.nodeInfo.forEach(nodeInfo => {
-        if (nodeInfo.data.lat && nodeInfo.data.lon) {
+        if ((nodeInfo.data.lat && nodeInfo.data.lon) || (nodeInfo.data.mlat && nodeInfo.data.mlon)) {
           nodesData.push({
             node: nodeInfo.data.node,
-            lat: nodeInfo.data.lat,
-            lon: nodeInfo.data.lon,
+            lat: nodeInfo.data.lat || nodeInfo.data.mlat,
+            lon: nodeInfo.data.lon || nodeInfo.data.mlon,
             mlat: nodeInfo.data.mlat || nodeInfo.data.lat,
             mlon: nodeInfo.data.mlon || nodeInfo.data.lon,
             meshrf : nodeInfo.data.meshrf,
