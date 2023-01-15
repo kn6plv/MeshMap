@@ -168,6 +168,9 @@ class BaArednMap extends Component {
     const mhref = (n) => {
       return this.props.appConfig.offline ? <a>{n.node}</a> : <a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a>
     }
+    const todayStart = new Date().setHours(0, 0, 0, 0) / 1000;
+    const yesterdayStart = todayStart - 24 * 60 * 60;
+    const weekStart = todayStart - 7 * 24 * 60 * 60;
     const mapCenter = [this.props.appConfig.mapSettings.mapCenter.lat, this.props.appConfig.mapSettings.mapCenter.lon];
     return (
       <Map ref="map" className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={false}>
@@ -219,6 +222,13 @@ class BaArednMap extends Component {
                   <table>
                     <tr style={{verticalAlign:"top"}}><td>Description</td><td>{n.node_details.description}</td></tr>
                     <tr><td>Location</td><td>{n.lat},{n.lon}</td></tr>
+                    <tr><td>Last seen</td><td>
+                    {
+                      n.lastseen > todayStart ? "Today" :
+                      n.lastseen > yesterdayStart ? "Yesterday" :
+                      n.lastseen > weekStart ? "The last 7 days" : "Ages ago"
+                    }
+                    </td></tr>
                     <tr><td>RF Status</td><td style={{textTransform: "capitalize"}}>{n.meshrf.status}</td></tr>
                     { n.meshrf.status === 'on' && <tbody>
                         <tr><td>SSID</td><td>{n.meshrf.ssid}</td></tr>

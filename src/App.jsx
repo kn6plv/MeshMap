@@ -29,6 +29,7 @@ class App extends Component {
       if (nodeInfo.status === 200 && nodeInfo.data.lat && nodeInfo.data.lon) {
         const node = {
           node: nodeInfo.data.node,
+          lastseen: nodeInfo.data.lastseen,
           lat: nodeInfo.data.lat,
           lon: nodeInfo.data.lon,
           mlat: nodeInfo.data.lat,
@@ -81,6 +82,7 @@ class App extends Component {
         if ((nodeInfo.data.lat && nodeInfo.data.lon) || (nodeInfo.data.mlat && nodeInfo.data.mlon)) {
           nodesData.push({
             node: nodeInfo.data.node,
+            lastseen: nodeInfo.data.lastseen,
             lat: nodeInfo.data.lat || nodeInfo.data.mlat,
             lon: nodeInfo.data.lon || nodeInfo.data.mlon,
             mlat: nodeInfo.data.mlat || nodeInfo.data.lat,
