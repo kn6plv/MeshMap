@@ -162,7 +162,7 @@ html, body {
         const aa = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat) * Math.cos(nlat);
         const distance = r2m(2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa)));
 
-        if (distance > 0.1 && node.data.meshrf.status !== "off") {
+        if (distance > 0.1 && node.data.meshrf.freq) {
           const a = Math.sin(nlon - lon) * Math.cos(nlat);
           const b = Math.cos(lat) * Math.sin(nlat) - Math.sin(lat) * Math.cos(nlat) * Math.cos(nlon - lon);
           const bearing = r2d(Math.atan2(a, b));
