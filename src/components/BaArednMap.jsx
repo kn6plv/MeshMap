@@ -248,22 +248,33 @@ class BaArednMap extends Component {
                         const hn = nodes[chostname];
                         if (hn && m.linkType) {
                           let info = "";
-                          if (n.lat && n.lon && hn.lat && hn.lon && (m.linkType === "RF" || m.linkType == "BB")) {
-                            const from = Turf.point([ n.lon, n.lat ]);
-                            const to = Turf.point([ hn.lon, hn.lat ]);
-                            const bearing = (360 + Math.round(Turf.bearing(from, to, { units: "degrees" }))) % 360;
-                            const distance = Turf.distance(from, to, { units: "miles" }).toFixed(1);
-                            if (parseFloat(distance) > 0) {
-                              let sigf = m.signal - m.noise;
-                              if (isNaN(sigf)) {
-                                sigf = '-';
+                          if (n.lat && n.lon && hn.lat && hn.lon) {
+                            if (m.linkType === "RF") {
+                              const from = Turf.point([ n.lon, n.lat ]);
+                              const to = Turf.point([ hn.lon, hn.lat ]);
+                              const bearing = (360 + Math.round(Turf.bearing(from, to, { units: "degrees" }))) % 360;
+                              const distance = Turf.distance(from, to, { units: "miles" }).toFixed(1);
+                              if (parseFloat(distance) > 0) {
+                                let sigf = m.signal - m.noise;
+                                if (isNaN(sigf)) {
+                                  sigf = '-';
+                                }
+                                const hl = hn.link_info.find(info => this.canonicalHostname(info.hostname) === cname);
+                                let sigt = hl ? hl.signal - hl.noise : '-';
+                                if (isNaN(sigt)) {
+                                  sigt = '-';
+                                }
+                                info = `${sigf} dB \u2190 ${bearing}\u00B0 ${distance} miles \u2192 ${sigt} dB`;
                               }
-                              const hl = hn.link_info.find(info => this.canonicalHostname(info.hostname) === cname);
-                              let sigt = hl ? hl.signal - hl.noise : '-';
-                              if (isNaN(sigt)) {
-                                sigt = '-';
+                            }
+                            else if (m.linkType == "BB") {
+                              const from = Turf.point([ n.lon, n.lat ]);
+                              const to = Turf.point([ hn.lon, hn.lat ]);
+                              const bearing = (360 + Math.round(Turf.bearing(from, to, { units: "degrees" }))) % 360;
+                              const distance = Turf.distance(from, to, { units: "miles" }).toFixed(1);
+                              if (parseFloat(distance) > 0) {
+                                info = `${bearing}\u00B0 ${distance} miles`;
                               }
-                              info = `${sigf} dB \u2190 ${bearing}\u00B0 ${distance} miles \u2192 ${sigt} dB`;
                             }
                           }
                           return <div>
