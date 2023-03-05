@@ -248,7 +248,7 @@ class BaArednMap extends Component {
                         const hn = nodes[chostname];
                         if (hn && m.linkType) {
                           let info = "";
-                          if (n.lat && n.lon && hn.lat && hn.lon && m.linkType === "RF") {
+                          if (n.lat && n.lon && hn.lat && hn.lon && (m.linkType === "RF" || m.linkType == "BB")) {
                             const from = Turf.point([ n.lon, n.lat ]);
                             const to = Turf.point([ hn.lon, hn.lat ]);
                             const bearing = (360 + Math.round(Turf.bearing(from, to, { units: "degrees" }))) % 360;
