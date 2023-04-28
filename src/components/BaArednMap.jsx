@@ -166,7 +166,7 @@ class BaArednMap extends Component {
       validnodes[fn] = n;
     });
     const mhref = (n) => {
-      return this.props.appConfig.offline ? <a>{n.node}</a> : <a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a>
+      return this.props.appConfig.active === false ? <a>{n.node}</a> : <a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a>
     }
     const todayStart = new Date().setHours(0, 0, 0, 0) / 1000;
     const yesterdayStart = todayStart - 24 * 60 * 60;
