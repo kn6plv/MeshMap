@@ -72,9 +72,21 @@ class BaArednMap extends Component {
         const url = (await Promise.all(this.props.appConfig.mapSettings.servers.map(async tile => {
           try {
             if (tile.test) {
-              await axios.head(tile.test, { timeout: 1000 });
+              return await new Promise(resolve => {
+                const img = document.createElement("img");
+                img.onload = () => resolve(tile.url);
+                img.onerror = () => resolve(null);
+                img.src = tile.test;
+                setTimeout(() => {
+                  if (!img.complete) {
+                    resolve(null);
+                  }
+                }, 1000);
+              });
             }
-            return tile.url;
+            else {
+              return tile.url;
+            }
           }
           catch (e) {
             return null;
