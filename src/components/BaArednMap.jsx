@@ -58,6 +58,11 @@ function getIcon(rf){
 
 class BaArednMap extends Component {
 
+  constructor(props) {
+    super(props);
+    this.mapRef = React.createRef();
+  }
+
   state = {
     tile_url: null
   }
@@ -187,7 +192,7 @@ class BaArednMap extends Component {
     const weekStart = todayStart - 7 * 24 * 60 * 60;
     const mapCenter = [this.props.appConfig.mapSettings.mapCenter.lat, this.props.appConfig.mapSettings.mapCenter.lon];
     return (
-      <Map ref="map" className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={true}>
+      <Map ref={this.mapRef} className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={true}>
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url={this.state.tile_url}
