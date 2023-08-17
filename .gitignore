@@ -5,3 +5,4 @@ startdev.sh
 ._.DS_Store
 build/
 public/data/
+dist/

@@ -109,9 +109,10 @@ class App extends Component {
 
   async componentDidMount() {
     const appConfig = await axios.get('appConfig.json')
-    this.setState({appConfig: appConfig.data})
-    document.title = `${this.state.appConfig.contactInfo.callsign} - ${process.env.REACT_APP_NAME} ${process.env.REACT_APP_VERSION} by ${process.env.REACT_APP_CREATOR}`;
-    this.getNodesData();
+    this.setState({appConfig: appConfig.data}, () => {
+      document.title = `${this.state.appConfig.contactInfo.callsign} - ${import.meta.env.VITE_APP_NAME} ${import.meta.env.VITE_APP_VERSION} by ${import.meta.env.VITE_APP_CREATOR}`;
+      this.getNodesData();
+    })
   }
 
   render() {

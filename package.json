@@ -4,35 +4,24 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@babel/core": "7.9.0",
-    "@svgr/webpack": "4.3.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@turf/turf": "^6.5.0",
-    "@typescript-eslint/eslint-plugin": "^2.10.0",
-    "@typescript-eslint/parser": "^2.10.0",
+    "@types/react": "^18.0.37",
+    "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-react": "^4.0.0",
     "alertifyjs": "^1.13.1",
     "axios": "^0.21.1",
-    "babel-eslint": "10.1.0",
-    "babel-jest": "^24.9.0",
-    "babel-loader": "8.1.0",
-    "babel-plugin-named-asset-import": "^0.3.6",
-    "babel-preset-react-app": "^9.1.2",
     "bootstrap": "^4.5.0",
     "camelcase": "^5.3.1",
-    "case-sensitive-paths-webpack-plugin": "2.3.0",
     "css-loader": "3.4.2",
     "dotenv": "8.2.0",
     "dotenv-expand": "5.1.0",
-    "eslint": "^6.6.0",
-    "eslint-config-react-app": "^5.2.1",
-    "eslint-loader": "3.0.3",
-    "eslint-plugin-flowtype": "4.6.0",
-    "eslint-plugin-import": "2.20.1",
-    "eslint-plugin-jsx-a11y": "6.2.3",
-    "eslint-plugin-react": "7.19.0",
-    "eslint-plugin-react-hooks": "^1.6.1",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
     "file-loader": "4.3.0",
     "fs-extra": "^8.1.0",
     "html-webpack-plugin": "4.0.0-beta.11",
@@ -51,9 +40,7 @@
     "postcss-preset-env": "6.7.0",
     "postcss-safe-parser": "4.0.1",
     "react": "^18.2.0",
-    "react-app-polyfill": "^1.0.6",
     "react-bootstrap": "^2.8.0",
-    "react-dev-utils": "^10.2.1",
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.2.1",
     "react-map-gl": "^5.2.10",
@@ -67,30 +54,15 @@
     "ts-pnp": "1.1.6",
     "typescript": "^3.9.5",
     "url-loader": "2.3.0",
-    "webpack": "4.42.0",
-    "webpack-dev-server": "^3.11.2",
-    "webpack-manifest-plugin": "2.2.0",
-    "workbox-webpack-plugin": "4.3.1"
+    "vite": "^4.3.9"
   },
   "scripts": {
-    "start": "node scripts/start.js",
-    "build": "node --max-old-space-size=2048 scripts/build.js",
+    "start": "npm run dev",
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
     "test": "node scripts/test.js"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "jest": {
     "roots": [
@@ -140,11 +112,6 @@
     "watchPlugins": [
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"
-    ]
-  },
-  "babel": {
-    "presets": [
-      "react-app"
     ]
   }
 }

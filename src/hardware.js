@@ -105,6 +105,6 @@ const hardware = {
     "0xe1a5": "Ubiquiti PowerBridge M5"
 };
 
-module.exports = (boardid) => {
+export default (boardid) => {
     return hardware[boardid];
 }

@@ -5,7 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet"
 import { Icon } from "leaflet";
 import axios from "axios";
 import hardware from "../hardware";
-const Turf = require('@turf/turf');
+import * as Turf from '@turf/turf';
 
 const PurpleIcon = new Icon({
   iconUrl: "./mesh_icon_75px_purple.png",
