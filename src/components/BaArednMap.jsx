@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from "react";
-import { Map, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import { Icon } from "leaflet";
 import axios from "axios";
 import hardware from "../hardware";
@@ -192,7 +192,7 @@ class BaArednMap extends Component {
     const weekStart = todayStart - 7 * 24 * 60 * 60;
     const mapCenter = [this.props.appConfig.mapSettings.mapCenter.lat, this.props.appConfig.mapSettings.mapCenter.lon];
     return (
-      <Map ref={this.mapRef} className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={true}>
+      <MapContainer ref={this.mapRef} className="Map" center={mapCenter} zoom={this.props.appConfig.mapSettings.zoom} scrollWheelZoom={true}>
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url={this.state.tile_url}
@@ -312,14 +312,14 @@ class BaArednMap extends Component {
             </Marker>
           )
         }
-      </Map>
+      </MapContainer>
     );
   }
 
   openPopup(id) {
     const popup = this.refs[this.canonicalHostname(id)];
     if (popup) {
-      popup.fireLeafletEvent('click');
+      popup.fireEvent('click');
     }
   }
 
