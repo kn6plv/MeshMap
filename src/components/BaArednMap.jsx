@@ -3,7 +3,6 @@
 import React, { Component } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import { Icon } from "leaflet";
-import axios from "axios";
 import hardware from "../hardware";
 import * as Turf from '@turf/turf';
 
@@ -61,10 +60,16 @@ class BaArednMap extends Component {
   constructor(props) {
     super(props);
     this.mapRef = React.createRef();
+    this.markers = {};
+
   }
 
+  setMarkerRef = (element, node) => {
+    this.markers[node] = element;
+  };
+
   state = {
-    tile_url: null
+    tile_url: null,
   }
 
   render() {
@@ -185,7 +190,7 @@ class BaArednMap extends Component {
       validnodes[fn] = n;
     });
     const mhref = (n) => {
-      return this.props.appConfig.active === false ? <a>{n.node}</a> : <a href={`http://${n.node}.local.mesh`} target="_blank">{n.node}</a>
+      return this.props.appConfig.active === false ? <a>{n.node}</a> : <a href={`http://${n.node}.local.mesh`} target="_blank" rel="noreferrer">{n.node}</a>
     }
     const todayStart = new Date().setHours(0, 0, 0, 0) / 1000;
     const yesterdayStart = todayStart - 24 * 60 * 60;
@@ -199,7 +204,7 @@ class BaArednMap extends Component {
         />
         {
           rfconns.map(conn =>
-            <Polyline color="limegreen" weight="2" positions={conn.pos}>
+            <Polyline color="limegreen" weight="2" positions={conn.pos} key={conn.from + conn.to}>
               <Popup maxWidth="500">
                 <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
               </Popup>
@@ -208,7 +213,7 @@ class BaArednMap extends Component {
         }
         {
           tunconns.map(conn =>
-            <Polyline color="grey" weight="2" dashArray="5 5" positions={conn.pos}>
+            <Polyline color="grey" weight="2" dashArray="5 5" positions={conn.pos} key={conn.from + conn.to}>
               <Popup maxWidth="500">
                 <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
               </Popup>
@@ -217,7 +222,7 @@ class BaArednMap extends Component {
         }
         {
           dtdconns.map(conn =>
-            <Polyline color="cadetblue" weight="2" dashArray="1 10" positions={conn.pos}>
+            <Polyline color="cadetblue" weight="2" dashArray="1 10" positions={conn.pos} key={conn.from + conn.to}>
               <Popup maxWidth="500">
                 <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
               </Popup>
@@ -226,7 +231,7 @@ class BaArednMap extends Component {
         }
         {
           rfdtdconns.map(conn =>
-            <Polyline color="limegreen" weight="3" dashArray="2 6" positions={conn.pos}>
+            <Polyline color="limegreen" weight="3" dashArray="2 6" positions={conn.pos} key={conn.from + conn.to}>
               <Popup maxWidth="500">
                 <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
               </Popup>
@@ -235,77 +240,79 @@ class BaArednMap extends Component {
         }
         { 
           Object.values(validnodes).map(n =>
-            <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.mlat,n.mlon]} icon={ getIcon(n.meshrf) }>
+            <Marker ref={(el) => this.setMarkerRef(el, n.node.toUpperCase())} key={n.node} position={[n.mlat,n.mlon]} icon={ getIcon(n.meshrf) }>
               <Popup minWidth="240" maxWidth="380"> {
                 <div><h6>{mhref(n)}</h6>
                   <table>
-                    <tr style={{verticalAlign:"top"}}><td>Description</td><td>{n.node_details.description}</td></tr>
-                    <tr><td>Location</td><td>{n.lat},{n.lon}</td></tr>
-                    <tr><td>Last seen</td><td>
-                    {
-                      n.lastseen > todayStart ? "Today" :
-                      n.lastseen > yesterdayStart ? "Yesterday" :
-                      n.lastseen > weekStart ? "The last 7 days" : "Ages ago"
-                    }
-                    </td></tr>
-                    <tr><td>RF Status</td><td style={{textTransform: "capitalize"}}>{n.meshrf.status}</td></tr>
-                    { n.meshrf.status === 'on' && <tbody>
-                        <tr><td>SSID</td><td>{n.meshrf.ssid}</td></tr>
-                        <tr style={{verticalAlign:"top"}}><td>Channel</td><td>{n.meshrf.channel}</td></tr>
-                        <tr><td>Frequency</td><td>{n.meshrf.freq}</td></tr>
-                        <tr><td>Bandwidth</td><td>{n.meshrf.chanbw} MHz</td></tr>
-                        <tr><td>LQM</td><td>{n.lqm && n.lqm.enabled ? 'Enabled' : n.lqm ? 'Disabled' : 'Unavailable'}</td></tr>
-                        <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
-                        </tbody>
-                    }
-                    <tr style={{verticalAlign:"top"}}><td>Hardware</td><td>{hardware(n.node_details.board_id) || n.node_details.model}</td></tr>
-                    <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
-                    <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
-                      n.link_info.map(m => {
-                        const cname = this.canonicalHostname(n.node);
-                        const chostname = this.canonicalHostname(m.hostname);
-                        const hn = nodes[chostname];
-                        if (hn && m.linkType) {
-                          let info = "";
-                          if (n.lat && n.lon && hn.lat && hn.lon) {
-                            if (m.linkType === "RF") {
-                              const from = Turf.point([ n.lon, n.lat ]);
-                              const to = Turf.point([ hn.lon, hn.lat ]);
-                              const bearing = (360 + Math.round(Turf.bearing(from, to, { units: "degrees" }))) % 360;
-                              const distance = Turf.distance(from, to, { units: "miles" }).toFixed(1);
-                              if (parseFloat(distance) > 0) {
-                                let sigf = m.signal - m.noise;
-                                if (isNaN(sigf)) {
-                                  sigf = '-';
+                    <tbody>
+                      <tr style={{verticalAlign:"top"}}><td>Description</td><td>{n.node_details.description}</td></tr>
+                      <tr><td>Location</td><td>{n.lat},{n.lon}</td></tr>
+                      <tr><td>Last seen</td><td>
+                      {
+                        n.lastseen > todayStart ? "Today" :
+                        n.lastseen > yesterdayStart ? "Yesterday" :
+                        n.lastseen > weekStart ? "The last 7 days" : "Ages ago"
+                      }
+                      </td></tr>
+                      <tr><td>RF Status</td><td style={{textTransform: "capitalize"}}>{n.meshrf.status}</td></tr>
+                      { n.meshrf.status === 'on' && <tbody>
+                          <tr><td>SSID</td><td>{n.meshrf.ssid}</td></tr>
+                          <tr style={{verticalAlign:"top"}}><td>Channel</td><td>{n.meshrf.channel}</td></tr>
+                          <tr><td>Frequency</td><td>{n.meshrf.freq}</td></tr>
+                          <tr><td>Bandwidth</td><td>{n.meshrf.chanbw} MHz</td></tr>
+                          <tr><td>LQM</td><td>{n.lqm && n.lqm.enabled ? 'Enabled' : n.lqm ? 'Disabled' : 'Unavailable'}</td></tr>
+                          <tr><td>MAC</td><td>{n.interfaces[0].mac}</td></tr>
+                          </tbody>
+                      }
+                      <tr style={{verticalAlign:"top"}}><td>Hardware</td><td>{hardware(n.node_details.board_id) || n.node_details.model}</td></tr>
+                      <tr><td width="80">Firmware</td><td>{n.node_details.firmware_version}</td></tr>
+                      <tr style={{verticalAlign:"top",whiteSpace:"nowrap"}}><td>Neighbors</td><td> {
+                        n.link_info.map(m => {
+                          const cname = this.canonicalHostname(n.node);
+                          const chostname = this.canonicalHostname(m.hostname);
+                          const hn = nodes[chostname];
+                          if (hn && m.linkType) {
+                            let info = "";
+                            if (n.lat && n.lon && hn.lat && hn.lon) {
+                              if (m.linkType === "RF") {
+                                const from = Turf.point([ n.lon, n.lat ]);
+                                const to = Turf.point([ hn.lon, hn.lat ]);
+                                const bearing = (360 + Math.round(Turf.bearing(from, to, { units: "degrees" }))) % 360;
+                                const distance = Turf.distance(from, to, { units: "miles" }).toFixed(1);
+                                if (parseFloat(distance) > 0) {
+                                  let sigf = m.signal - m.noise;
+                                  if (isNaN(sigf)) {
+                                    sigf = '-';
+                                  }
+                                  const hl = hn.link_info.find(info => this.canonicalHostname(info.hostname) === cname);
+                                  let sigt = hl ? hl.signal - hl.noise : '-';
+                                  if (isNaN(sigt)) {
+                                    sigt = '-';
+                                  }
+                                  info = `${sigf} dB \u2190 ${bearing}\u00B0 ${distance} miles \u2192 ${sigt} dB`;
                                 }
-                                const hl = hn.link_info.find(info => this.canonicalHostname(info.hostname) === cname);
-                                let sigt = hl ? hl.signal - hl.noise : '-';
-                                if (isNaN(sigt)) {
-                                  sigt = '-';
+                              }
+                              else if (m.linkType == "BB") {
+                                const from = Turf.point([ n.lon, n.lat ]);
+                                const to = Turf.point([ hn.lon, hn.lat ]);
+                                const bearing = (360 + Math.round(Turf.bearing(from, to, { units: "degrees" }))) % 360;
+                                const distance = Turf.distance(from, to, { units: "miles" }).toFixed(1);
+                                if (parseFloat(distance) > 0) {
+                                  info = `${bearing}\u00B0 ${distance} miles`;
                                 }
-                                info = `${sigf} dB \u2190 ${bearing}\u00B0 ${distance} miles \u2192 ${sigt} dB`;
                               }
                             }
-                            else if (m.linkType == "BB") {
-                              const from = Turf.point([ n.lon, n.lat ]);
-                              const to = Turf.point([ hn.lon, hn.lat ]);
-                              const bearing = (360 + Math.round(Turf.bearing(from, to, { units: "degrees" }))) % 360;
-                              const distance = Turf.distance(from, to, { units: "miles" }).toFixed(1);
-                              if (parseFloat(distance) > 0) {
-                                info = `${bearing}\u00B0 ${distance} miles`;
-                              }
-                            }
+                            return <div key={m.hostname}>
+                              <div><a href="#" onClick={()=>this.openPopup(m.hostname)}>{chostname}</a> <span className="linktype">{m.linkType}</span></div>
+                              <div className="bearing">{info}</div>
+                            </div>
                           }
-                          return <div>
-                            <div key={m.hostname}><a href="#" onClick={()=>this.openPopup(m.hostname)}>{chostname}</a> <span className="linktype">{m.linkType}</span></div>
-                            <div className="bearing">{info}</div>
-                          </div>
-                        }
-                        else {
-                          return <div key={m.hostname}>{this.canonicalHostname(m.hostname)} <span className="linktype">{ m.linkType ? `${m.linkType}` : "" }</span></div>
-                        }
-                      })
-                    } </td></tr>
+                          else {
+                            return <div key={m.hostname}>{this.canonicalHostname(m.hostname)} <span className="linktype">{ m.linkType ? `${m.linkType}` : "" }</span></div>
+                          }
+                        })
+                      } </td></tr>
+                    </tbody>
                   </table>
                 </div>
               } </Popup>
@@ -317,7 +324,7 @@ class BaArednMap extends Component {
   }
 
   openPopup(id) {
-    const popup = this.refs[this.canonicalHostname(id)];
+    const popup = this.markers[this.canonicalHostname(id)];
     if (popup) {
       popup.fireEvent('click');
     }
