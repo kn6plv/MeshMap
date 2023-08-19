@@ -319,7 +319,7 @@ class BaArednMap extends Component {
   }
 
   canonicalHostname(hostname) {
-    return hostname.replace(/^\./, '').replace(/\.local\.mesh$/i,'').toUpperCase()
+    return hostname.replace(/^\./, '').replace(/^supernode\./i, '').replace(/\.local\.mesh$/i,'').toUpperCase()
   }
 }
 
