@@ -17,6 +17,8 @@ class Header extends Component {
         return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && (n.meshrf.freq.startsWith("3") || (n.meshrf.channel >= 3380 && n.meshrf.channel <= 3495))).length;
       case 58:
         return nodesData.filter(n => n.meshrf.freq && n.meshrf.status === "on" && n.meshrf.freq.startsWith("5") && !(n.meshrf.channel >= 3380 && n.meshrf.channel <= 3495)).length;
+      case 'supernode':
+        return nodesData.filter(n => n.node_details.mesh_supernode).length;
       case 'off':
         return nodesData.filter(n => n.meshrf.status === "off").length;
       case 'all':
@@ -42,6 +44,7 @@ class Header extends Component {
       b24: this.countNodes(this.props.nodesData, 24),
       b34: this.countNodes(this.props.nodesData, 34),
       b58: this.countNodes(this.props.nodesData, 58),
+      supernode: this.countNodes(this.props.nodesData, 'supernode'),
       off: this.countNodes(this.props.nodesData, 'off'),
       all: this.countNodes(this.props.nodesData, 'all')
     };
@@ -75,6 +78,12 @@ class Header extends Component {
             counts.b58 ? <tr className={ 'b58-' + this.state.selected }>
               <td><a href="#" onClick={()=>this.selectNodes('58')}><Image src="./mesh_icon_75px_gold.png" width={20}></Image> 5 GHz</a></td>
               <td>{counts.b58}</td>
+            </tr> : ""
+          }
+          {
+            counts.supernode ? <tr className={ 'supernode-' + this.state.selected }>
+              <td><a href="#" onClick={()=>this.selectNodes('supernode')}><Image src="./mesh_icon_75px_green.png" width={20}></Image> Supernode</a></td>
+              <td>{counts.supernode}</td>
             </tr> : ""
           }
           {

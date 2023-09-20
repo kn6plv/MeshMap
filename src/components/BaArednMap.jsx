@@ -32,8 +32,17 @@ const GrayIcon = new Icon({
   iconSize: [25, 25],
 })
 
+const GreenIcon = new Icon({
+  iconUrl: "./mesh_icon_75px_green.png",
+  iconSize: [25, 25],
+})
+
 // Function to get the Freq Icon
-function getIcon(rf){
+function getIcon(n){
+  if (n.node_details.mesh_supernode) {
+    return GreenIcon;
+  }
+  const rf = n.meshrf;
   const chan = parseInt(rf.channel);
   if (chan >= 3380 && chan <= 3495) {
     return BlueIcon;
@@ -110,7 +119,7 @@ class BaArednMap extends Component {
       if (!(n.mlat && n.mlon)) {
         return;
       }
-      const icon = getIcon(n.meshrf);
+      const icon = getIcon(n);
       switch (this.props.selected) {
         case '900':
           if (icon !== MagentaIcon) {
@@ -129,6 +138,11 @@ class BaArednMap extends Component {
           break;
         case '58':
           if (icon !== OrangeIcon) {
+            return;
+          }
+          break;
+        case 'supernode':
+          if (icon !== GreenIcon) {
             return;
           }
           break;
@@ -243,7 +257,7 @@ class BaArednMap extends Component {
         }
         { 
           Object.values(validnodes).map(n =>
-            <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.mlat,n.mlon]} icon={ getIcon(n.meshrf) }>
+            <Marker ref={n.node.toUpperCase()} key={n.node} position={[n.mlat,n.mlon]} icon={ getIcon(n) }>
               <Popup minWidth="240" maxWidth="380"> {
                 <div><h6>{mhref(n)}</h6>
                   <table>
