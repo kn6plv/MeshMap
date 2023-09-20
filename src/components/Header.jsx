@@ -23,7 +23,7 @@ class Header extends Component {
         return nodesData.filter(n => n.meshrf.status === "off").length;
       case 'all':
       default:
-        return this.countNodes(nodesData, 900) + this.countNodes(nodesData, 900) + this.countNodes(nodesData, 24) + this.countNodes(nodesData, 34) + this.countNodes(nodesData, 58) + this.countNodes(nodesData, 'off');
+        return this.countNodes(nodesData, 900) + this.countNodes(nodesData, 24) + this.countNodes(nodesData, 34) + this.countNodes(nodesData, 58) + this.countNodes(nodesData, 'off');
     }
   }
 
