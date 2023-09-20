@@ -99,6 +99,7 @@ class BaArednMap extends Component {
 
     const rfconns = [];
     const tunconns = [];
+    const stunconns = [];
     const dtdconns = [];
     const rfdtdconns = [];
     const nodes = {};
@@ -170,6 +171,9 @@ class BaArednMap extends Component {
             case 'BB':
               rfdtdconns.push(conn);
               break;
+            case 'STUN':
+              stunconns.push(conn);
+              break;
             default:
               break;
           }
@@ -204,6 +208,15 @@ class BaArednMap extends Component {
         {
           tunconns.map(conn =>
             <Polyline color="grey" weight="2" dashArray="5 5" positions={conn.pos}>
+              <Popup maxWidth="500">
+                <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
+              </Popup>
+            </Polyline>
+          )
+        }
+        {
+          stunconns.map(conn =>
+            <Polyline color="blue" weight="2" dashArray="5 5" positions={conn.pos}>
               <Popup maxWidth="500">
                 <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
               </Popup>
