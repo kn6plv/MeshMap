@@ -31,8 +31,17 @@ const GrayIcon = new Icon({
   iconSize: [25, 25],
 })
 
+const GreenIcon = new Icon({
+  iconUrl: "./mesh_icon_75px_green.png",
+  iconSize: [25, 25],
+})
+
 // Function to get the Freq Icon
-function getIcon(rf){
+function getIcon(n){
+  if (n.node_details.mesh_supernode) {
+    return GreenIcon;
+  }
+  const rf = n.meshrf;
   const chan = parseInt(rf.channel);
   if (chan >= 3380 && chan <= 3495) {
     return BlueIcon;
@@ -109,6 +118,7 @@ class BaArednMap extends Component {
 
     const rfconns = [];
     const tunconns = [];
+    const stunconns = [];
     const dtdconns = [];
     const rfdtdconns = [];
     const nodes = {};
@@ -119,7 +129,7 @@ class BaArednMap extends Component {
       if (!(n.mlat && n.mlon)) {
         return;
       }
-      const icon = getIcon(n.meshrf);
+      const icon = getIcon(n);
       switch (this.props.selected) {
         case '900':
           if (icon !== MagentaIcon) {
@@ -138,6 +148,11 @@ class BaArednMap extends Component {
           break;
         case '58':
           if (icon !== OrangeIcon) {
+            return;
+          }
+          break;
+        case 'supernode':
+          if (icon !== GreenIcon) {
             return;
           }
           break;
@@ -180,6 +195,9 @@ class BaArednMap extends Component {
             case 'BB':
               rfdtdconns.push(conn);
               break;
+            case 'STUN':
+              stunconns.push(conn);
+              break;
             default:
               break;
           }
@@ -221,6 +239,15 @@ class BaArednMap extends Component {
           )
         }
         {
+          stunconns.map(conn =>
+            <Polyline color="blue" weight="2" dashArray="5 5" positions={conn.pos}>
+              <Popup maxWidth="500">
+                <a href="#" onClick={()=>this.openPopup(conn.from)}>{conn.from}</a> &harr; <a href="#" onClick={()=>this.openPopup(conn.to)}>{conn.to}</a>
+              </Popup>
+            </Polyline>
+          )
+        }
+        {
           dtdconns.map(conn =>
             <Polyline color="cadetblue" weight="2" dashArray="1 10" positions={conn.pos} key={conn.from + conn.to}>
               <Popup maxWidth="500">
@@ -240,7 +267,7 @@ class BaArednMap extends Component {
         }
         { 
           Object.values(validnodes).map(n =>
-            <Marker ref={(el) => this.setMarkerRef(el, n.node.toUpperCase())} key={n.node} position={[n.mlat,n.mlon]} icon={ getIcon(n.meshrf) }>
+            <Marker ref={(el) => this.setMarkerRef(el, n.node.toUpperCase())} key={n.node} position={[n.mlat,n.mlon]} icon={ getIcon(n) }>
               <Popup minWidth="240" maxWidth="380"> {
                 <div><h6>{mhref(n)}</h6>
                   <table>
