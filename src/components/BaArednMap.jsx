@@ -182,10 +182,10 @@ class BaArednMap extends Component {
                 rfdtdconns.push(conn);
               }
               break;
-            case 'XLK':
+            case 'XLINK':
               rfdtdconns.push(conn);
               break;
-            case 'SUP':
+            case 'SUPER':
               stunconns.push(conn);
               break;
             default:
