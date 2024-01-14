@@ -267,7 +267,7 @@ class BaArednMap extends Component {
                       <tr style={{verticalAlign:"top"}}><td>Description</td><td>{n.node_details.description}</td></tr>
                       <tr><td>Location</td><td>{n.lat},{n.lon}</td></tr>
                       {!isNaN(n.meshrf.height) && 
-                        <tr><td>Height</td><td>{n.meshrf.height}</td></tr>
+                        <tr><td>Height</td><td>{n.meshrf.height} m</td></tr>
                       }
                       {!isNaN(n.meshrf.azimuth) &&
                         <tr><td>Azimuth</td><td>{n.meshrf.azimuth}&deg;</td></tr>
