@@ -265,11 +265,11 @@ class BaArednMap extends Component {
                   <div><h6>{mhref(n)}</h6>
                     <table>
                       {n.node_details.description &&
-                        <tr style={{verticalAlign:"top"}}><td>Description</td><td>{n.node_details.description}</td></tr>
+                        <tr style={{verticalAlign:"top"}}><td>Description</td><td>{n.node_details.description.replace("&deg;", "\u00B0")}</td></tr>
                       }
                       <tr><td>Location</td><td>{n.lat},{n.lon}</td></tr>
                       {n.meshrf.antenna && n.meshrf.antenna.description &&
-                        <tr style={{verticalAlign:"top"}}><td>Antenna</td><td>{n.meshrf.antenna.description}</td></tr>
+                        <tr style={{verticalAlign:"top"}}><td>Antenna</td><td>{n.meshrf.antenna.description.replace("&deg;", "\u00B0")}</td></tr>
                       }
                       {!isNaN(n.meshrf.height) && 
                         <tr><td>Height</td><td>{n.meshrf.height} m</td></tr>
