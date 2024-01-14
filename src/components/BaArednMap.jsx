@@ -314,7 +314,7 @@ class BaArednMap extends Component {
                                   info = `${sigf} dB \u2190 ${bearing}\u00B0 ${distance} miles \u2192 ${sigt} dB`;
                                 }
                               }
-                              else if (m.linkType == "BB") {
+                              else if (m.linkType == "XLINK") {
                                 const from = Turf.point([ n.lon, n.lat ]);
                                 const to = Turf.point([ hn.lon, hn.lat ]);
                                 const bearing = (360 + Math.round(Turf.bearing(from, to, { units: "degrees" }))) % 360;
