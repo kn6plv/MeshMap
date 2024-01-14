@@ -11,6 +11,7 @@ import alertify from 'alertifyjs'
 import "alertifyjs/build/css/themes/default.min.css"
 import "alertifyjs/build/css/alertify.min.css"
 import Header from './components/Header'
+import "leaflet-rotatedmarker";
 
 class App extends Component {
 
