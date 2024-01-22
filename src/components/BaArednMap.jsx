@@ -171,6 +171,7 @@ class BaArednMap extends Component {
               rfconns.push(conn);
               break;
             case 'TUN':
+            case 'WIREGUARD':
               tunconns.push(conn);
               break;
             case 'DTD':
