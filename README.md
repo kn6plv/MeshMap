@@ -1,4 +1,7 @@
 # Mesh Map 
+
+***NOTE: This project is no longer being actively developed. Instead see https://github.com/kn6plv/NewMeshMap/***
+
 Mesh Map is a web based application useful to view who are connected to the mesh and what is his node position in map,
 it also shows additional information for each node.
 
